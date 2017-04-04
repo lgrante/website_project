@@ -2,7 +2,7 @@
 
 include_once('connection_bdd.php');
 
-if(isset($_GET['id']) AND !empty($_GET['id'])) {
+if(isset($_GET['id']) AND !empty($_GET['id'])) { // Si on a bien l'id de l'article qui a été envoyé on récupère toute ses informations pour les afficher ensuite.
     
     $idArticle = htmlspecialchars($_GET['id']);
     $idArticle = (int) $idArticle;
