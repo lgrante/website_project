@@ -1,6 +1,6 @@
 <?php
 
-include_once('connection_bdd.php');
+include_once('inc/connection_bdd.php');
 
 if(isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['password_check'])) {
 	$email = htmlspecialchars($_POST['email']);
@@ -72,7 +72,7 @@ if(isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['passwo
 	    			</td>
 	    		</tr>
 	    	</table>
-	    	<div>
+	    	<div id="errorArea">
 	    		<p style="color: red;"><?php if(isset($error)) { echo $error; } ?></p>
 	    	</div>
     	</form>

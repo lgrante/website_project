@@ -1,6 +1,6 @@
 <?php
 
-include_once('connection_bdd.php');
+include_once('inc/connection_bdd.php');
 
 if(isset($_GET['id']) AND !empty($_GET['id'])) { // Si on a bien l'id de l'article qui a été envoyé on récupère toute ses informations pour les afficher ensuite.
     
@@ -21,11 +21,11 @@ if(isset($_GET['id']) AND !empty($_GET['id'])) { // Si on a bien l'id de l'artic
     <head>
         <meta charset="utf-8" />
         <title>Mon blog</title>
-    	<link href="css/style.css" rel="stylesheet" /> 
+    	<link href="style/style.css" rel="stylesheet" /> 
     </head>
         
     <body>
-        <a href="index.php">Retour à la page d'acceuil</a>
+        <a href="../index.php">Retour à la page d'acceuil</a>
         <div>
             <ul>
                 <li>

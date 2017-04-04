@@ -1,6 +1,6 @@
 <?php
 
-include_once('connection_bdd.php');
+include_once('inc/connection_bdd.php');
 
 $request = $bdd->query('SELECT * FROM articles ORDER BY date_time_publication DESC'); // On récupère tous les articles de la table.
 
@@ -10,16 +10,16 @@ $request = $bdd->query('SELECT * FROM articles ORDER BY date_time_publication DE
     <head>
         <meta charset="utf-8" />
         <title>Mon blog</title>
-    	<link href="css/style.css" rel="stylesheet" /> 
+    	<link href="style/style.css" rel="stylesheet" /> 
     </head>
         
     <body>
         <h4>
-            <a href="edition_article.php">Nouvel article !</a>
+            <a href="php/edition_article.php">Nouvel article !</a>
         </h4>
         <ul>
-            <li><a href="inscription.php">S'inscire</a></li>
-            <li><a href="connexion.php">Se connecter</a></li>
+            <li><a href="php/inscription.php">S'inscire</a></li>
+            <li><a href="php/connexion.php">Se connecter</a></li>
         </ul>
         <ul>
             <?php 
@@ -28,7 +28,7 @@ $request = $bdd->query('SELECT * FROM articles ORDER BY date_time_publication DE
             ?> 
                 <li>
                     <h3>
-                        <a href="article.php?id=<?= $a['id'] ?>">
+                        <a href="php/article.php?id=<?= $a['id'] ?>">
                         <?= $a['title'] ?></a>
                     </h3>
                     <i>Publié le <?= $a['date_time_publication'] ?>. <br />
@@ -37,8 +37,8 @@ $request = $bdd->query('SELECT * FROM articles ORDER BY date_time_publication DE
                     <?php } ?></i>
                     <p><?= $contentPart ?><?php if($contentPart != $a['content']) { echo '...'; } ?><br /><i><a href="article.php?id=<?= $a['id'] ?>">Lire la suite</a></i></p>
                     <p>
-                        <a href="edition_article.php?edit=<?= $a['id'] ?>">Modifier | </a>
-                        <a href="supprimer_article.php?id=<?= $a['id'] ?>">Supprimer</a>
+                        <a href="php/edition_article.php?edit=<?= $a['id'] ?>">Modifier | </a>
+                        <a href="php/supprimer_article.php?id=<?= $a['id'] ?>">Supprimer</a>
                     </p>
                 </li>
             <?php } ?>
