@@ -25,7 +25,7 @@ if(isset($_GET['id']) AND !empty($_GET['id'])) { // Si on a bien l'id de l'artic
     </head>
         
     <body>
-        <a href="../index.php">Retour à la page d'acceuil</a>
+        <a href="index.php">Retour à la page d'acceuil</a>
         <div>
             <ul>
                 <li>

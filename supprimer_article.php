@@ -9,5 +9,5 @@ if(isset($_GET['id']) AND !empty('id')) { // Si l'utilisateur a bien renseigné 
     $request = $bdd->prepare('DELETE FROM articles WHERE id = :id');
     $request->execute(array('id' => $delId));
     
-    header('Location: ../index.php');
+    header('Location: index.php');
 }

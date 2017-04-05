@@ -21,7 +21,7 @@ if(isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['passwo
 		header('Location: connection.php?first_connection');
 	} else {
 
-		$idTaken = $usernamesTaken->fetch();
+		$idTaken = $usernamesTaken->fetch(); 
 
 		if($username == $idTaken['username'] && $email == $idTaken['email']) {
 
@@ -42,7 +42,7 @@ if(isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['passwo
     <head>
         <meta charset="utf-8" />
         <title>Mon blog</title>
-    	<link href="css/style.css" rel="stylesheet" /> 
+    	<link href="style/style.css" rel="stylesheet" /> 
     </head>
         
     <body>

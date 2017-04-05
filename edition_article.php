@@ -30,7 +30,7 @@ if(isset($_POST['title']) && isset($_POST['content'])) { // Si l'utilisateur à 
         
         $request = $bdd->prepare('INSERT INTO articles(title, content, date_time_publication) VALUES(:title, :content, NOW())');
         $request->execute(array('title' => $title, 'content' => $content));
-        header('Location: ../index.php');
+        header('Location: index.php');
     } else { // Si on est en mode édition on met à jour l'entrée correspondant à l'article.
 
         $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
@@ -48,7 +48,7 @@ if(isset($_POST['title']) && isset($_POST['content'])) { // Si l'utilisateur à 
     </head>
         
     <body>
-        <a href="../index.php">Annuler</a>
+        <a href="index.php">Annuler</a>
         <?php
         if($editionMode) { // On adapte le code html en fonction de si on est en mode édition ou rédaction ?>
             

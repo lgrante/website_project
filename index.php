@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 include_once('inc/connection_bdd.php');
 
 $request = $bdd->query('SELECT * FROM articles ORDER BY date_time_publication DESC'); // On récupère tous les articles de la table.
@@ -15,12 +17,22 @@ $request = $bdd->query('SELECT * FROM articles ORDER BY date_time_publication DE
         
     <body>
         <h4>
-            <a href="php/edition_article.php">Nouvel article !</a>
+            <a href="edition_article.php">Nouvel article !</a>
         </h4>
+        <?php if(isset($_SESSION['id'])) {
+        if(isset($_GET['connected'])) { ?>
+        <p><i>Heureux de vous revoir <?= $_SESSION['username'] ?> !</i></p>  <!-- TO DO : Afficher ce message dans un boite en js. -->
+        <?php } ?>
         <ul>
-            <li><a href="php/inscription.php">S'inscire</a></li>
-            <li><a href="php/connexion.php">Se connecter</a></li>
+            <li><a href="#"><?= $_SESSION['username'] ?></a></li>
+            <li><a href="deconnection.php">Se déconnecter</a></li>
         </ul>
+        <?php } else { ?>
+        <ul>
+            <li><a href="inscription.php">S'inscire</a></li>
+            <li><a href="connection.php">Se connecter</a></li>
+        </ul>
+        <?php } ?>
         <ul>
             <?php 
             while($a = $request->fetch()) { // On fait une boucle pour afficher chaque article
@@ -28,7 +40,7 @@ $request = $bdd->query('SELECT * FROM articles ORDER BY date_time_publication DE
             ?> 
                 <li>
                     <h3>
-                        <a href="php/article.php?id=<?= $a['id'] ?>">
+                        <a href="article.php?id=<?= $a['id'] ?>">
                         <?= $a['title'] ?></a>
                     </h3>
                     <i>Publié le <?= $a['date_time_publication'] ?>. <br />
@@ -37,8 +49,8 @@ $request = $bdd->query('SELECT * FROM articles ORDER BY date_time_publication DE
                     <?php } ?></i>
                     <p><?= $contentPart ?><?php if($contentPart != $a['content']) { echo '...'; } ?><br /><i><a href="article.php?id=<?= $a['id'] ?>">Lire la suite</a></i></p>
                     <p>
-                        <a href="php/edition_article.php?edit=<?= $a['id'] ?>">Modifier | </a>
-                        <a href="php/supprimer_article.php?id=<?= $a['id'] ?>">Supprimer</a>
+                        <a href="edition_article.php?edit=<?= $a['id'] ?>">Modifier | </a>
+                        <a href="supprimer_article.php?id=<?= $a['id'] ?>">Supprimer</a>
                     </p>
                 </li>
             <?php } ?>
