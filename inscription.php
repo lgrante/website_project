@@ -2,38 +2,29 @@
 
 include_once('inc/connection_bdd.php');
 
+$usernamesTaken = $bdd->query('SELECT username, email FROM users');
+
+$result = array();
+
+while ($a = $usernamesTaken->fetch()) {
+	$result[] = $a;
+}
+
+$resultJson = json_encode($result);
+file_put_contents('json/users_list.json', $resultJson);
+
 if(isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['password_check'])) {
 	$email = htmlspecialchars($_POST['email']);
 	$username = htmlspecialchars($_POST['username']);
 	$password = htmlspecialchars($_POST['password']);
 	$password_check = htmlspecialchars($_POST['password_check']);
 
-	$usernamesTaken = $bdd->prepare('SELECT username, email FROM users WHERE username = :username OR email = :email');
-	$usernamesTaken->execute(array('username' => $username, 'email' => $email));
+	$hashedPassword = crypt($password, ',en*Kua#}KMm75RaDQ2gU(_hOb|pGN+ud2*>V|P/zL8si-jLre;wv<x)6K&-FKe1');
 
-	if($usernamesTaken->rowCount() == 0) {
-		// On continue
-		$hashedPassword = crypt($password, ',en*Kua#}KMm75RaDQ2gU(_hOb|pGN+ud2*>V|P/zL8si-jLre;wv<x)6K&-FKe1');
+	$request = $bdd->prepare('INSERT INTO users (username, email, password, date_time_registration) VALUES(:username, :email, :password, NOW())');
+	$request->execute(array('username' => $username, 'email' => $email, 'password' => $hashedPassword));
 
-		$request = $bdd->prepare('INSERT INTO users (username, email, password, date_time_registration) VALUES(:username, :email, :password, NOW())');
-		$request->execute(array('username' => $username, 'email' => $email, 'password' => $hashedPassword));
-
-		header('Location: connection.php?first_connection');
-	} else {
-
-		$idTaken = $usernamesTaken->fetch(); 
-
-		if($username == $idTaken['username'] && $email == $idTaken['email']) {
-
-			$error = 'Le nom d\'utilisateur est l\'adresse email renseignés sont déjà utilisé';
-		} else if($username == $idTaken['username']) {
-
-			$error = 'Ce nom d\'utilisateur est déjà utilisé';
-		} else {
-
-			$error = 'Cette adresse email est déjà utilisée';
-		}
-	}
+	header('Location: connection.php?first_connection');
 }
 
 ?>
@@ -41,8 +32,7 @@ if(isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['passwo
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>Mon blog</title>
-    	<link href="style/style.css" rel="stylesheet" /> 
+        <title>Mon blog</title> 
     </head>
         
     <body>
@@ -50,31 +40,36 @@ if(isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['passwo
 	    <form method="post">
 	    	<table>
 	    		<tr>
-	    			<td>Votre email :</td>
+	    			<td><label for="email">Votre email :</label></td>
 	    			<td><input type="text" name="email" placeholder="aa@aa.aa"></td>
+	    			<td><span id="helpEmail"></span></td>
 	    		</tr>
 	    		<tr>
-	    			<td>Nom d'utilisateur</td>
+	    			<td><label for="username">Nom d'utilisateur</label></td>
 	    			<td><input type="text" name="username" placeholder="Tesla"></td>
+	    			<td><span id="helpUsername"></span></td>
 	    		</tr>
 	    		<tr>
-	    			<td>Mot de passe</td>
+	    			<td><label for="password">Mot de passe</label></td>
 	    			<td><input type="password" name="password"></td>
+	    			<td><span id="helpPassword"></span></td>
 	    		</tr>
 	    		<tr>
-	    			<td>Confirmation du mot de passe</td>
+	    			<td><label for="password_check">Confirmation du mot de passe</label></td>
 	    			<td><input type="password" name="password_check"></td>
+	    			<td><span id="helpPasswordCheck"></span></td>
 	    		</tr>
 	    		<tr>
 	    			<td></td>
 	    			<td><br />
-	    				<input type="submit" value="Valider !">
+	    				<input id="submitRegister" type="submit" value="Valider !">
 	    			</td>
 	    		</tr>
 	    	</table>
 	    	<div id="errorArea">
-	    		<p style="color: red;"><?php if(isset($error)) { echo $error; } ?></p>
 	    	</div>
     	</form>
+    	<script type="text/javascript" src="js/fonctions.js"></script>
+    	<script type="text/javascript" src="js/inscription.js"></script>
 	</body>
 </html>

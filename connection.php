@@ -38,15 +38,15 @@ if(isset($_POST['login'], $_POST['password'])) {
 	    <form method="post">
 	    	<table>
 	    		<tr>
-	    			<td>Email ou nom d'utilisateur</td>
+	    			<td><label for="login">Email ou nom d'utilisateur</label></td>
 	    			<td><input type="text" name="login" placeholder="Tesla ou aa@aa.aa"></td>
 	    		</tr>
 	    		<tr>
-	    			<td>Mot de passe</td>
+	    			<td><label for="password">Mot de passe</label></td>
 	    			<td><input type="password" name="password" placeholder="Tesla"></td>
 	    		</tr>
 	    		<tr>
-	    			<td></td>
+	    			<td><a href="inscription.php">Je n'ai pas de compte</a></td>
 	    			<td><br />
 	    				<input type="submit" value="Valider !">
 	    			</td>
