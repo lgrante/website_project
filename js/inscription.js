@@ -117,7 +117,23 @@ passwordCheckElt.addEventListener("input", function (e) {
 });
 
 form.addEventListener("submit", function(e) {
-	if(correctFields) {
+
+	var checkedFields = 0;
+
+	correctFields.forEach(function (correctField) {
+
+		if(correctField) {
+
+			checkedFields++;
+		}  
+	});
+	if(checkedFields === correctFields.length) {
+
+		console.log('Tous les champs sont corrects');
+	} else {
+
 		e.preventDefault();
+
+		console.log('Champs incorrects');
 	}
 })
