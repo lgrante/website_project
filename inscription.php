@@ -45,17 +45,17 @@ if(isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['passwo
 	    			<td><span id="helpEmail"></span></td>
 	    		</tr>
 	    		<tr>
-	    			<td><label for="username">Nom d'utilisateur</label></td>
+	    			<td><label for="username">Nom d'utilisateur :</label></td>
 	    			<td><input type="text" name="username" placeholder="Tesla"></td>
 	    			<td><span id="helpUsername"></span></td>
 	    		</tr>
 	    		<tr>
-	    			<td><label for="password">Mot de passe</label></td>
+	    			<td><label for="password">Mot de passe :</label></td>
 	    			<td><input type="password" name="password"></td>
 	    			<td><span id="helpPassword"></span></td>
 	    		</tr>
 	    		<tr>
-	    			<td><label for="password_check">Confirmation du mot de passe</label></td>
+	    			<td><label for="password_check">Confirmation du mot de passe :</label></td>
 	    			<td><input type="password" name="password_check"></td>
 	    			<td><span id="helpPasswordCheck"></span></td>
 	    		</tr>

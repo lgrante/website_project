@@ -1,43 +1,51 @@
 <?php 
 
-include_once('inc/connection_bdd.php');
+session_start();
 
-$editionMode = false;
+if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
+    include_once('inc/connection_bdd.php');
 
-if(isset($_GET['edit']) AND !empty($_GET['edit'])) { // Si l'utilisateur veut modifier l'article on récupère l'article de la bdd afin qu'il puisse le modifier.
-    
-    $editionMode = true;
-    $editId = htmlspecialchars($_GET['edit']);
-    $editId = (int) $editId;
-    
-    $request = $bdd->prepare('SELECT * FROM articles WHERE id = :id');
-    $request->execute(array('id' => $editId));
-    
-    if($request->rowCount() == 1) {
+    $editionMode = false;
+
+    if(isset($_GET['edit']) AND !empty($_GET['edit'])) { // Si l'utilisateur veut modifier l'article on récupère l'article de la bdd afin qu'il puisse le modifier.
         
-        $editArticle = $request->fetch();
-    } else {
+        $editionMode = true;
+        $editId = htmlspecialchars($_GET['edit']);
+        $editId = (int) $editId;
         
-        die('Erreur : l\'article n\'existe pas...');
+        $request = $bdd->prepare('SELECT * FROM articles WHERE id = :id');
+        $request->execute(array('id' => $editId));
+        
+        if($request->rowCount() == 1) {
+            
+            $editArticle = $request->fetch();
+        } else {
+            
+            die('Erreur : l\'article n\'existe pas...');
+        }
     }
-}
-if(isset($_POST['title']) && isset($_POST['content'])) { // Si l'utilisateur à bien envoyer les informations du formulaire.
-    
-    $title = htmlspecialchars($_POST['title']);
-    $content = htmlspecialchars($_POST['content']);
-    
-    if(!$editionMode) { // Si on est pas en mode édition on crée une nouvelle entrée dans la table correspondant à l'article.
+    if(isset($_POST['title']) && isset($_POST['content'])) { // Si l'utilisateur à bien envoyer les informations du formulaire.
         
-        $request = $bdd->prepare('INSERT INTO articles(title, content, date_time_publication) VALUES(:title, :content, NOW())');
-        $request->execute(array('title' => $title, 'content' => $content));
-        header('Location: index.php');
-    } else { // Si on est en mode édition on met à jour l'entrée correspondant à l'article.
+        $title = htmlspecialchars($_POST['title']);
+        $content = htmlspecialchars($_POST['content']);
+        
+        if(!$editionMode) { // Si on est pas en mode édition on crée une nouvelle entrée dans la table correspondant à l'article.
+            
+            $request = $bdd->prepare('INSERT INTO articles(title, author_id, content, date_time_publication) VALUES(:title, :author_id, :content, NOW())');
+            $request->execute(array('title' => $title, 'author_id' => $_SESSION['id'], 'content' => $content));
+            header('Location: index.php');
+        } else { // Si on est en mode édition on met à jour l'entrée correspondant à l'article.
 
-        $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
-        $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
-        header('Location: article.php?id='.$editId);
+            $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
+            $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
+            header('Location: article.php?id='.$editId);
+        }
     }
+} else {
+
+    header('Location: inscription.php');
 }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -58,6 +66,7 @@ if(isset($_POST['title']) && isset($_POST['content'])) { // Si l'utilisateur à 
         
             <h3>Mode de rédaction</h3>
             <p>Rédiger un article pour la communautée !</p>
+            <p>Auteur : <?= $_SESSION['username'] ?></p>
             <?php
         }?>
         <form method="post">

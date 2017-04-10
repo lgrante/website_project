@@ -3,35 +3,38 @@
 include_once('inc/connection_bdd.php');
 
 if(isset($_POST['login'], $_POST['password'])) {
+	if(!empty($_POST['login']) && !empty($_POST['password'])) {
+		$login = htmlspecialchars($_POST['login']);
+		$password = htmlspecialchars($_POST['password']);
+		$hashedPassword = crypt($password, ',en*Kua#}KMm75RaDQ2gU(_hOb|pGN+ud2*>V|P/zL8si-jLre;wv<x)6K&-FKe1');
 
-	$login = htmlspecialchars($_POST['login']);
-	$password = htmlspecialchars($_POST['password']);
-	$hashedPassword = crypt($password, ',en*Kua#}KMm75RaDQ2gU(_hOb|pGN+ud2*>V|P/zL8si-jLre;wv<x)6K&-FKe1');
+		if(preg_match('#@#', $login)) {
 
-	if(preg_match('#@#', $login)) {
+			$userLogin = $bdd->prepare('SELECT id, username, email, password FROM users WHERE email = :email AND password = :password');
+			$userLogin->execute(array('email' => $login, 'password' => $hashedPassword));			
+		} else {
 
-		$userLogin = $bdd->prepare('SELECT id, username, email, password FROM users WHERE email = :email AND password = :password');
-		$userLogin->execute(array('email' => $login, 'password' => $hashedPassword));			
+			$userLogin = $bdd->prepare('SELECT id, username, email, password FROM users WHERE username = :username AND password = :password');
+			$userLogin->execute(array('username' => $login, 'password' => $hashedPassword));
+		}
+
+		if($userLogin->rowCount() == 1) {      
+
+			$resultat = $userLogin->fetch();
+			session_start();
+			$_SESSION['id'] = $resultat['id'];
+			$_SESSION['username'] = $resultat['username'];
+			$_SESSION['email'] = $resultat['email'];
+			header('Location: index.php?connected');
+		} else {
+			
+			$error = 'Mot de passe ou identifiant incorrect(e)';
+		}
 	} else {
 
-		$userLogin = $bdd->prepare('SELECT id, username, email, password FROM users WHERE username = :username AND password = :password');
-		$userLogin->execute(array('username' => $login, 'password' => $hashedPassword));
-	}
-
-	if($userLogin->rowCount() == 1) {      
-
-		$resultat = $userLogin->fetch();
-		session_start();
-		$_SESSION['id'] = $resultat['id'];
-		$_SESSION['username'] = $resultat['username'];
-		$_SESSION['email'] = $resultat['email'];
-		header('Location: index.php?connected');
-	} else {
-		
-		$error = 'Mot de passe ou identifiant incorrect(e)';
-	}
+		$error = 'Veuillez remplir tous les champs';
+	}	
 }
-
 ?>
 <!DOCTYPE html>
 <html>

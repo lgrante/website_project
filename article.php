@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 include_once('inc/connection_bdd.php');
 
 if(isset($_GET['id']) AND !empty($_GET['id'])) { // Si on a bien l'id de l'article qui a été envoyé on récupère toute ses informations pour les afficher ensuite.
@@ -27,6 +29,8 @@ if(isset($_GET['id']) AND !empty($_GET['id'])) { // Si on a bien l'id de l'artic
     <body>
         <a href="index.php">Retour à la page d'acceuil</a>
         <div>
+            <?php if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) { 
+            if($article['author_id'] == $_SESSION['id']) { ?>
             <ul>
                 <li>
                     <a href="edition_article.php?edit=<?= $article['id'] ?>">Modifier</a>
@@ -35,6 +39,7 @@ if(isset($_GET['id']) AND !empty($_GET['id'])) { // Si on a bien l'id de l'artic
                     <a href="supprimer_article.php?id=<?= $article['id'] ?>">Supprimer</a>
                 </li>
             </ul>
+            <?php }} ?>
             <h3><?= $article['title'] ?></h3>
         </div>
         <div>
