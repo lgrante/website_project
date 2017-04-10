@@ -8,9 +8,14 @@ var submitElt = document.getElementById("submitRegister");
 
 var helpEmailElt = document.getElementById('helpEmail');
 var helpUsernameElt = document.getElementById('helpUsername');
-var passwordHelp = document.getElementById('helpPassword');
+var helpPasswordElt = document.getElementById('helpPassword');
+var helpPasswordCheckElt = document.getElementById('helpPasswordCheck');
 
 var correctFields = [false, false, false, false];
+var message = '';
+
+helpEmailElt.style.color = 'red';
+helpUsernameElt.style.color = 'red';
 
 ajaxGet("http://localhost/website_project/json/users_list.json", function(response) {
 
@@ -19,28 +24,35 @@ ajaxGet("http://localhost/website_project/json/users_list.json", function(respon
 	emailElt.addEventListener("input", function (e) { // TO DO : Remplacer ces morceaux de code par une fonction pour éviter les répétitions.
 
 		helpEmailElt.textContent = '';
-		var message = '';
+		message = '';
+		helpEmailElt.style.fontWeight = 'normal';
+
 		var email = e.target.value;
-		var emailTaken;
+		var emailTaken = false;
 
-		for(i = 0; i<results.length; i++) { // TO DO : mettre un ptn de while espèce d'abruti, afin que la boucle s'arrête lorsqu'on a trouvé un email ou un username égal à celui rentré.
+		for(i = 0; i<results.length; i++) {
 
-			if(results[i].email === e.target.value) {
+			if(results[i].email === email) {
 
-				correctFields[0] = false;
+				emailTaken = true;
+			}
+		}
+		if(!emailTaken && emailValidate(email)) {
+
+			correctFields[0] = true;
+
+			emailElt.style.border = '2px solid green'; 
+		} else {
+
+			correctFields[0] = false;
+			emailElt.style.border = '2px solid red';
+
+			if(emailTaken) {
 
 				message = 'Cette email est déjà utilisée';
-			} else if (!emailValidate(email)) {
-
-				if(email !== '') {
-
-					correctFields[0] = false;
-
-					message = 'Email non valide';
-				}
 			} else {
 
-				correctFields[0] = true;
+				message = 'Email non valide';
 			}
 		}
 
@@ -50,18 +62,27 @@ ajaxGet("http://localhost/website_project/json/users_list.json", function(respon
 	usernameElt.addEventListener("input", function (e) {
 
 		helpUsernameElt.textContent = '';
+		helpUsernameElt.style.fontWeight = 'normal';
+		var usernameTaken = false;
 
 		for(i = 0; i<results.length; i++) {
 
 			if(results[i].username === e.target.value) {
 
-				correctFields[1] = false;
-
-				helpUsernameElt.textContent = 'Ce nom d\'utilisateur est déjà utilisé';
-			} else {
-
-				correctFields[1] = true;
+				usernameTaken = true;
 			}
+		}
+		if(!usernameTaken) {
+
+			correctFields[1] = true;
+
+			usernameElt.style.border = '2px solid green';
+		} else {
+
+			correctFields[1] = false;
+
+			helpUsernameElt.textContent = 'Ce nom d\'utilisateur est déjà utilisé';
+			usernameElt.style.border = '2px solid red';
 		}
 	});
 });
@@ -69,50 +90,70 @@ ajaxGet("http://localhost/website_project/json/users_list.json", function(respon
 passwordElt.addEventListener("input", function (e) {
 
 	var passwordLength = e.target.value.length;
-	var message = '';
+	helpPasswordElt.textContent = '';
+	message = '';
+	helpPasswordElt.style.fontWeight = 'normal';
 
 	if(passwordLength >= 0 && passwordLength < 6) {
 
 		correctFields[2] = false;
 
+		passwordElt.style.border = '2px solid red';
 		message = 'Très faible';
-		passwordHelp.style.color = 'red';
+		helpPasswordElt.style.color = 'red';
 	} else {
 
 		correctFields[2] = true;
+		
+		passwordElt.style.border = '2px solid green';
 
 		if(passwordLength >= 6 && passwordLength < 8) {
 
 			message = 'Moyen (nous vous conseillons un mot de passe plus long)';
-			passwordHelp.style.color = 'orange';
+			helpPasswordElt.style.color = 'orange';
 		} else if(passwordLength >= 8 && passwordLength < 10) {
 
 			message = 'Fort';
-			passwordHelp.style.color = 'green';
+			helpPasswordElt.style.color = 'green';
 		} else {
 
 			message = 'Très fort';
 		}
 	}
 
-	passwordHelp.textContent = 'Force du mot de passe : ' + message;
+	if(passwordCheckElt.value !== '') {
+
+		if(e.target.value !== passwordCheckElt.value) {
+
+			helpPasswordCheckElt.textContent = 'Les deux mots de passe ne correspondent pas';
+		}
+	}
+
+	helpPasswordElt.textContent = 'Force du mot de passe : ' + message;
 });
 
 passwordCheckElt.addEventListener("input", function (e) {
 
-	var helpPasswordCheck = document.getElementById('helpPasswordCheck');
+	var passwordCheck = e.target.value;
+	helpPasswordCheckElt.textContent = '';
+	helpPasswordCheckElt.style.fontWeight = 'normal';
 
-	if(e.target.value != passwordElt.value) {
+	if(passwordCheck !== passwordElt.value || passwordElt.value.length < 6) {
 
 		correctFields[3] = false;
 
-		helpPasswordCheck.textContent = 'Les deux mots de passe ne correspondent pas';
-		helpPasswordCheck.style.color = 'red';
+		passwordCheckElt.style.border = '2px solid red';
+		if(passwordCheck !== passwordElt.value) {
+
+			helpPasswordCheckElt.textContent = 'Les deux mots de passe ne correspondent pas';
+			helpPasswordCheckElt.style.color = 'red';
+		}
 	} else {
 
 		correctFields[3] = true;
 
-		helpPasswordCheck.textContent = '';
+		passwordCheckElt.style.border = '2px solid green';
+		helpPasswordCheckElt.textContent = '';
 	}
 });
 
@@ -134,6 +175,11 @@ form.addEventListener("submit", function(e) {
 
 		e.preventDefault();
 
-		console.log('Champs incorrects');
+		helpEmailElt.style.fontWeight = 'bold';
+		helpUsernameElt.style.fontWeight = 'bold';
+		helpPasswordCheckElt.style.fontWeight = 'bold';
+		if(passwordElt.value.length < 6) {
+			helpPasswordElt.style.fontWeight = 'bold';
+		}
 	}
-})
+});

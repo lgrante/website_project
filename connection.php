@@ -54,7 +54,9 @@ if(isset($_POST['login'], $_POST['password'])) {
 	    			<td><input type="password" name="password" placeholder="Tesla"></td>
 	    		</tr>
 	    		<tr>
+	    		<?php if(!isset($_GET['first_connection'])) { ?>
 	    			<td><a href="inscription.php">Je n'ai pas de compte</a></td>
+	    		<?php } ?>
 	    			<td><br />
 	    				<input type="submit" value="Valider !">
 	    			</td>

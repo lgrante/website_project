@@ -1,18 +1,3 @@
-function arrayCheck(array, checkedVar, propertie) { // TO DO : fonction à revoir
-	var a = propertie
-
-	for(i = 0; i < array.length; i++) {
-
-		if(array[i].propertie === checkedVar) {
-
-			return true;
-		} else {
-
-			return false;
-		}
-	}
-}
-
 function emailValidate(email) {
 	var regex = /^([0-9a-zA-Z]([-_\\.]*[0-9a-zA-Z]+)*)@([0-9a-zA-Z]([-_\\.]*[0-9a-zA-Z]+)*)[\\.]([a-zA-Z]{2,9})$/;
 
