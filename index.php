@@ -38,7 +38,7 @@ $articles = $bdd->query('SELECT * FROM articles ORDER BY date_time_publication D
             while($a = $articles->fetch()) { // On fait une boucle pour afficher chaque article
                 $contentPart = substr($a['content'], 0, 150); // On voudra afficher seulement le début de l'article l'utilisateur devra cliquer pour lire la suite.
                 $author = $bdd->prepare('SELECT username FROM users WHERE id = :author_id');
-                $author->execute(array('author_id' => $a['id']));
+                $author->execute(array('author_id' => $a['author_id']));
                 $author_id = $author->fetch();
             ?> 
                 <li>

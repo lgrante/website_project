@@ -1,30 +1,38 @@
 <?php
 
-include_once('inc/connection_bdd.php');
+session_start();
 
-$usernamesTaken = $bdd->query('SELECT username, email FROM users');
+if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 
-$result = array();
+	include_once('inc/connection_bdd.php');
 
-while ($a = $usernamesTaken->fetch()) {
-	$result[] = $a;
-}
+	$usernamesTaken = $bdd->query('SELECT username, email FROM users');
 
-$resultJson = json_encode($result);
-file_put_contents('json/users_list.json', $resultJson);
+	$result = array();
 
-if(isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['password_check'])) {
-	$email = htmlspecialchars($_POST['email']);
-	$username = htmlspecialchars($_POST['username']);
-	$password = htmlspecialchars($_POST['password']);
-	$password_check = htmlspecialchars($_POST['password_check']);
+	while ($a = $usernamesTaken->fetch()) {
+		$result[] = $a;
+	}
 
-	$hashedPassword = crypt($password, ',en*Kua#}KMm75RaDQ2gU(_hOb|pGN+ud2*>V|P/zL8si-jLre;wv<x)6K&-FKe1');
+	$resultJson = json_encode($result);
+	file_put_contents('json/users_list.json', $resultJson);
 
-	$request = $bdd->prepare('INSERT INTO users (username, email, password, date_time_registration) VALUES(:username, :email, :password, NOW())');
-	$request->execute(array('username' => $username, 'email' => $email, 'password' => $hashedPassword));
+	if(isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['password_check'])) {
+		$email = htmlspecialchars($_POST['email']);
+		$username = htmlspecialchars($_POST['username']);
+		$password = htmlspecialchars($_POST['password']);
+		$password_check = htmlspecialchars($_POST['password_check']);
 
-	header('Location: connection.php?first_connection');
+		$hashedPassword = crypt($password, ',en*Kua#}KMm75RaDQ2gU(_hOb|pGN+ud2*>V|P/zL8si-jLre;wv<x)6K&-FKe1');
+
+		$request = $bdd->prepare('INSERT INTO users (username, email, password, date_time_registration) VALUES(:username, :email, :password, NOW())');
+		$request->execute(array('username' => $username, 'email' => $email, 'password' => $hashedPassword));
+
+		header('Location: connection.php?first_connection');
+	}
+} else {
+
+	header('Location: index.php');
 }
 
 ?>

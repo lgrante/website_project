@@ -4,17 +4,23 @@ session_start();
 
 include_once('inc/connection_bdd.php');
 
-if(isset($_GET['id']) AND !empty($_GET['id'])) { // Si on a bien l'id de l'article qui a été envoyé on récupère toute ses informations pour les afficher ensuite.
-    
+$request = $bdd->query('SELECT MAX(id) AS max_id FROM articles');
+$maxId = $request->fetch();
+
+if(isset($_GET['id']) AND !empty($_GET['id']) AND $_GET['id'] <= $maxId['max_id']) { // Si on a bien l'id de l'article qui a été envoyé on récupère toute ses informations pour les afficher ensuite.
     $idArticle = htmlspecialchars($_GET['id']);
     $idArticle = (int) $idArticle;
 
     $request = $bdd->prepare('SELECT * FROM articles WHERE id = :id');
     $request->execute(array('id' => $idArticle));
     $article = $request->fetch();
+
+    $author = $bdd->prepare('SELECT username FROM users WHERE id = :author_id');
+    $author->execute(array('author_id' => $article['id']));
+    $author_username = $author->fetch();
 } else {
     
-    die('Erreur : l\'article n\'existe pas...');
+    header('Location: index.php');
 }
 
 ?>
@@ -41,6 +47,7 @@ if(isset($_GET['id']) AND !empty($_GET['id'])) { // Si on a bien l'id de l'artic
             </ul>
             <?php }} ?>
             <h3><?= $article['title'] ?></h3>
+            <h4>Auteur : <?= $author_username['username'] ?></h4>
         </div>
         <div>
             <p><?= $article['content'] ?></p>
