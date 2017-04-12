@@ -4,7 +4,7 @@ session_start();
 
 if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 
-	include_once('inc/connection_bdd.php');
+	include_once('/inc/connection_bdd.php');
 
 	$usernamesTaken = $bdd->query('SELECT username, email FROM users');
 
@@ -28,7 +28,7 @@ if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 		$request = $bdd->prepare('INSERT INTO users (username, email, password, date_time_registration) VALUES(:username, :email, :password, NOW())');
 		$request->execute(array('username' => $username, 'email' => $email, 'password' => $hashedPassword));
 
-		header('Location: connection.php?first_connection');
+		header('Location: index.php?p=connection&first_connection');
 	}
 } else {
 
@@ -77,7 +77,7 @@ if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 	    	<div id="errorArea">
 	    	</div>
     	</form>
-    	<script type="text/javascript" src="js/fonctions.js"></script>
-    	<script type="text/javascript" src="js/inscription.js"></script>
+    	<script type="text/javascript" src="/js/fonctions.js"></script>
+    	<script type="text/javascript" src="/js/inscription.js"></script>
 	</body>
 </html>

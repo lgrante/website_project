@@ -38,12 +38,12 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 
             $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
             $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
-            header('Location: article.php?id='.$editId);
+            header('Location: index.php?p=edition_article&id='.$editId);
         }
     }
 } else {
 
-    header('Location: inscription.php');
+    header('Location: index.php?p=inscription');
 }
 
 ?>
@@ -61,7 +61,7 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
         if($editionMode) { // On adapte le code html en fonction de si on est en mode édition ou rédaction ?>
             
             <h3>Mode d'édition</h3>
-            <p>Bienvenue dans le mode d'édition, modifier votre artcile comme bon vous semble !</p>
+            <p>Bienvenue dans le mode d'édition, modifier votre article comme bon vous semble !</p>
             <?php } else { ?>
         
             <h3>Mode de rédaction</h3>

@@ -2,7 +2,7 @@
 
 session_start();
 
-include_once('inc/connection_bdd.php');
+include_once('/inc/connection_bdd.php');
 
 $request = $bdd->query('SELECT MAX(id) AS max_id FROM articles');
 $maxId = $request->fetch();
@@ -39,10 +39,10 @@ if(isset($_GET['id']) AND !empty($_GET['id']) AND $_GET['id'] <= $maxId['max_id'
             if($article['author_id'] == $_SESSION['id']) { ?>
             <ul>
                 <li>
-                    <a href="edition_article.php?edit=<?= $article['id'] ?>">Modifier</a>
+                    <a href="index.php?p=edition_article&amp;edit=<?= $article['id'] ?>">Modifier</a>
                 </li>
                 <li>
-                    <a href="supprimer_article.php?id=<?= $article['id'] ?>">Supprimer</a>
+                    <a href="index.php?p=supprimer_article&amp;id=<?= $article['id'] ?>">Supprimer</a>
                 </li>
             </ul>
             <?php }} ?>
