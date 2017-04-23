@@ -2,7 +2,7 @@
 
 session_start();
 
-include_once('/inc/connection_bdd.php');
+include_once('inc/connection_bdd.php');
 
 $articles = $bdd->query('SELECT * FROM articles ORDER BY date_time_publication DESC'); // On récupère tous les articles de la table.
 
