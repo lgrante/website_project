@@ -2,7 +2,7 @@
 
 session_start();
 
-include_once('/inc/connection_bdd.php');
+include_once('inc/connection_bdd.php');
 
 $request = $bdd->query('SELECT MAX(id) AS max_id FROM articles');
 $maxId = $request->fetch();

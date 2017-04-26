@@ -17,7 +17,7 @@ var message = '';
 helpEmailElt.style.color = 'red';
 helpUsernameElt.style.color = 'red';
 
-ajaxGet("http://localhost/website_project/json/users_list.json", function(response) {
+ajaxGet("json/users_list.json", function(response) {
 
 	var results = JSON.parse(response);
 

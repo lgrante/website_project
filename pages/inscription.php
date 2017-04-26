@@ -4,7 +4,7 @@ session_start();
 
 if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 
-	include_once('/inc/connection_bdd.php');
+	include_once('inc/connection_bdd.php');
 
 	$usernamesTaken = $bdd->query('SELECT username, email FROM users');
 
@@ -14,7 +14,7 @@ if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 		$result[] = $a;
 	}
 
-	$resultJson = json_encode($result);
+    $resultJson = json_encode($result);
 	file_put_contents('json/users_list.json', $resultJson);
 
 	if(isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['password_check'])) {
@@ -77,7 +77,7 @@ if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 	    	<div id="errorArea">
 	    	</div>
     	</form>
-    	<script type="text/javascript" src="/js/fonctions.js"></script>
-    	<script type="text/javascript" src="/js/inscription.js"></script>
+    	<script type="text/javascript" src="js/fonctions.js"></script>
+    	<script type="text/javascript" src="js/inscription.js"></script>
 	</body>
 </html>
