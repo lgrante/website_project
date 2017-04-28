@@ -3,8 +3,8 @@
 session_start();
 
 if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
-    include_once('inc/connection_bdd.php');
 
+    include_once('inc/connection_bdd.php');
     $editionMode = false;
 
     if(isset($_GET['edit']) AND !empty($_GET['edit'])) { // Si l'utilisateur veut modifier l'article on récupère l'article de la bdd afin qu'il puisse le modifier.
@@ -30,10 +30,22 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
         $content = htmlspecialchars($_POST['content']);
         
         if(!$editionMode) { // Si on est pas en mode édition on crée une nouvelle entrée dans la table correspondant à l'article.
-            
-            $request = $bdd->prepare('INSERT INTO articles(title, author_id, content, date_time_publication) VALUES(:title, :author_id, :content, NOW())');
-            $request->execute(array('title' => $title, 'author_id' => $_SESSION['id'], 'content' => $content));
-            header('Location: index.php');
+
+            if(isset($_FILES) AND !empty($_FILES['miniature']['name'])) {
+                
+                if(exif_imagetype($_FILES['miniature']['tmp_name']) == 2) {
+
+                    $request = $bdd->prepare('INSERT INTO articles(title, author_id, content, date_time_publication) VALUES(:title, :author_id, :content, NOW())');
+                    $request->execute(array('title' => $title, 'author_id' => $_SESSION['id'], 'content' => $content));
+                    $lastId = $bdd->lastInsertId();
+                    $path = 'pictures/articles_miniatures/'. $lastId . '.jpg';
+                    move_uploaded_file($_FILES['miniature']['tmp_name'], $path);
+                    header('Location: index.php');
+                } else {
+
+                    $error = 'Votre image doit être au format jpg';
+                }
+            }
         } else { // Si on est en mode édition on met à jour l'entrée correspondant à l'article.
 
             $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
@@ -69,10 +81,16 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
             <p>Auteur : <?= $_SESSION['username'] ?></p>
             <?php
         }?>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <input type="text" placeholder="Titre de l'article" name="title" <?php if($editionMode) { ?> value="<?= $editArticle['title'] ?>" <?php } ?></inpu><br />
             <textarea placeholder="Contenu de l'article" name="content" rows="8" cols="45"><?php if($editionMode) { ?> <?= $editArticle['content'] ?> <?php } ?></textarea><br />
+            <?php if(!$editionMode) { ?>
+            <input type="file" name="miniature"><br />
+            <?php } ?>
             <input type="submit" value="Enregistrer">
         </form>
+        <div id="errorArea">
+            <p><?php if(isset($error)){ echo $error; } ?></p>
+        </div>
 	</body>
 </html>

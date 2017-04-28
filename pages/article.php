@@ -46,6 +46,7 @@ if(isset($_GET['id']) AND !empty($_GET['id']) AND $_GET['id'] <= $maxId['max_id'
                 </li>
             </ul>
             <?php }} ?>
+            <img src="pictures/articles_miniatures/<?= $article['id'] ?>.jpg" width="200">
             <h3><?= $article['title'] ?></h3>
             <h4>Auteur : <?= $author_username['username'] ?></h4>
         </div>
