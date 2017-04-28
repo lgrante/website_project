@@ -38,7 +38,7 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 
             $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
             $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
-            header('Location: index.php?p=edition_article&id='.$editId);
+            header('Location: index.php?p=article&id='.$editId);
         }
     }
 } else {
