@@ -33,7 +33,7 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 
             if(isset($_FILES) AND !empty($_FILES['miniature']['name'])) {
                 
-                if(exif_imagetype($_FILES['miniature']['tmp_name']) == 2) {
+                //if(exif_imagetype($_FILES['miniature']['tmp_name']) == 2) {
 
                     $request = $bdd->prepare('INSERT INTO articles(title, author_id, content, date_time_publication) VALUES(:title, :author_id, :content, NOW())');
                     $request->execute(array('title' => $title, 'author_id' => $_SESSION['id'], 'content' => $content));
@@ -41,10 +41,10 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
                     $path = 'pictures/articles_miniatures/'. $lastId . '.jpg';
                     move_uploaded_file($_FILES['miniature']['tmp_name'], $path);
                     header('Location: index.php');
-                } else {
+                /*} else {
 
                     $error = 'Votre image doit être au format jpg';
-                }
+                }*/
             }
         } else { // Si on est en mode édition on met à jour l'entrée correspondant à l'article.
 
