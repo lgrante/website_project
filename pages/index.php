@@ -47,7 +47,7 @@ $articles = $bdd->query('SELECT * FROM articles ORDER BY date_time_publication D
                         <?= $a['title'] ?></a>
                     </h3>
                     <i>Publié le <?= $a['date_time_publication'] ?> par <a href="#"><?= $author_id['username'] ?>.</a><br />
-                    <?php if($a['date_time_update'] != '0000-00-00 00:00:00' || !is_null($a['date_time_update'])) { ?>
+                    <?php if($a['date_time_update'] != '0000-00-00 00:00:00' || is_null($a['date_time_update'])) { ?>
                     Dernière modification le <?= $a['date_time_update'] ?>
                     <?php } ?></i><br />
                     <img src="pictures/articles_miniatures/<?= $a['id'] ?>.jpg" width="200">
