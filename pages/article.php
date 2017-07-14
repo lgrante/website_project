@@ -50,7 +50,7 @@ if(isset($_GET['id']) AND !empty($_GET['id']) AND $_GET['id'] <= $maxId['max_id'
             <h4>Auteur : <?= $author_username['username'] ?></h4>
         </div>
         <div>
-            <p><?= $article['content'] ?></p>
+            <p><?= nl2br($article['content']) ?></p>
         </div>
 	</body>
 </html>
