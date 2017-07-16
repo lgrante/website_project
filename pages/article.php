@@ -14,9 +14,11 @@ if(isset($_GET['id']) AND !empty($_GET['id']) AND $_GET['id'] <= $maxId['max_id'
     $request = $bdd->prepare('SELECT * FROM articles WHERE id = :id');
     $request->execute(array('id' => $idArticle));
     $article = $request->fetch();
+    
+    $currentPicturePath = 'pictures/articles_miniatures/' . $article['id'] . '.jpg';
 
     $author = $bdd->prepare('SELECT username FROM users WHERE id = :author_id');
-    $author->execute(array('author_id' => $article['id']));
+    $author->execute(array('author_id' => $article['author_id']));
     $author_username = $author->fetch();
 } else {
     
@@ -46,12 +48,12 @@ if(isset($_GET['id']) AND !empty($_GET['id']) AND $_GET['id'] <= $maxId['max_id'
                 </li>
             </ul>
             <?php }} ?>
-            <img src="pictures/articles_miniatures/<?= $article['id'] ?>.jpg" width="200">
+            <img src="<?= $currentPicturePath ?>" width="200">
             <h3><?= $article['title'] ?></h3>
             <h4>Auteur : <?= $author_username['username'] ?></h4>
         </div>
         <div>
-            <p><?= $article['content'] ?></p>
+            <p><?= nl2br($article['content']) ?></p>
         </div>
 	</body>
 </html>
