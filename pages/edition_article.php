@@ -49,7 +49,7 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
         } else { // Si on est en mode édition on met à jour l'entrée correspondant à l'article.
 
             $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
-            $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
+            $request->execute(array('title' => $title, 'content' => $cnotent, 'id' => $editId));
             header('Location: index.php?p=article&id='.$editId);
         }
     }
