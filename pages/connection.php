@@ -63,7 +63,7 @@ if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 	    		</tr>
 	    		<tr>
 	    			<td><label for="password">Mot de passe</label></td>
-	    			<td><input type="password" name="password" placeholder="Tesla"></td>
+	    			<td><input type="password" name="password" placeholder="yoursecretpassword"></td>
 	    		</tr>
 	    		<tr>
 	    		<?php if(!isset($_GET['first_connection'])) { ?>
