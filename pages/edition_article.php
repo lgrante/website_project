@@ -27,40 +27,49 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 
     if(isset($_POST['title'], $_POST['content'])) { // Si on reçoit un requête post.
 
-        if(!empty($_POST['title']) AND !empty($_POST['content'])) {
-            
-            $title = htmlspecialchars($_POST['title']);
-            $content = htmlspecialchars($_POST['content']);
-            
-            if(!$editionMode) { // Si on est pas en mode édition on crée une nouvelle entrée dans la table correspondant à l'article.
+        $title = htmlspecialchars($_POST['title']);
+        $content = htmlspecialchars($_POST['content']);
 
-                if(isset($_FILES['miniature']) AND !empty($_FILES['miniature']['name'])) {
+        if(isset($_POST['publish'])) { // On publie directement l'article.
 
-                    $request = $bdd->prepare('INSERT INTO articles(title, author_id, content, date_time_publication) VALUES(:title, :author_id, :content, NOW())');
-                    $request->execute(array('title' => $title, 'author_id' => $_SESSION['id'], 'content' => $content));
-                    $pictureId = $bdd->lastInsertId();
-                    $path = 'pictures/articles_miniatures/'. $pictureId . '.jpg';
-                    move_uploaded_file($_FILES['miniature']['tmp_name'], $path);
-                    header('Location: index.php');
+            if(!empty($_POST['title']) AND !empty($_POST['content'])) {
+                
+                if(!$editionMode) { // Si on est pas en mode édition on crée une nouvelle entrée dans la table correspondant à l'article.
+
+                    if(isset($_FILES['miniature']) AND !empty($_FILES['miniature']['name'])) {
+
+                        $request = $bdd->prepare('INSERT INTO articles(title, author_id, content, date_time_publication, published) VALUES(:title, :author_id, :content, NOW(), 1)');
+                        $request->execute(array('title' => $title, 'author_id' => $_SESSION['id'], 'content' => $content));
+                        $pictureId = $bdd->lastInsertId();
+                        $path = 'pictures/articles_miniatures/'. $pictureId . '.jpg';
+                        move_uploaded_file($_FILES['miniature']['tmp_name'], $path);
+                        header('Location: index.php');
+                    }
+                } else { // Si on est en mode édition on met à jour l'entrée correspondant à l'article.
+
+                    //die('Hey you');
+                    if(isset($_FILES['miniature']) AND !empty($_FILES['miniature']['name'])) { // Si jamais l'utilisateur choisi une nouvelle image de miniature on supprime l'ancienne et on upload la nouvelle sur le serveur à la place.
+                        
+                        $pictureId = $editId; 
+                        $path = 'pictures/articles_miniatures/'. $pictureId . '.jpg';
+                        unlink($path);
+                        move_uploaded_file($_FILES['miniature']['tmp_name'], $path);
+                        $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
+                        $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
+                        header('Location: index.php?p=article&id=' . $editId);
+                    }
+                    $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
+                    $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
                 }
-            } else { // Si on est en mode édition on met à jour l'entrée correspondant à l'article.
+            } else {
 
-                //die('Hey you');
-                if(isset($_FILES['miniature']) AND !empty($_FILES['miniature']['name'])) { // Si jamais l'utilisateur choisi une nouvelle image de miniature on supprime l'ancienne et on upload la nouvelle sur le serveur à la place.
-                    
-                    $pictureId = $editId; 
-                    $path = 'pictures/articles_miniatures/'. $pictureId . '.jpg';
-                    unlink($path);
-                    move_uploaded_file($_FILES['miniature']['tmp_name'], $path);
-                    header('Location: index.php?p=article&id=' . $editId);
-                }
-
-                $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
-                $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
+                $error = '<p style="color : red;">Veuillez remplir tous les champs avant d\'enregistrer votre article.</p>';
             }
-        } else {
+        } else if(isset($_POST['save'])) { // L'article est seulement sauvegardé pour l'utilsateur.
 
-            $error = '<p style="color : red;">Veuillez remplir tous les champs avant d\'enregistrer votre article.</p>';
+            $request = $bdd->prepare('INSERT INTO articles(title, author_id, content, published) VALUES(:title, :author_id, :content, 0)');
+            $request->execute(array('title' => $title, 'author_id' => $_SESSION['id'], 'content' => $content));
+            header('Location: index.php');
         }
     }
 } else {
@@ -96,7 +105,10 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
             <input type="text" placeholder="Titre de l'article" name="title" <?php if($editionMode) { ?> value="<?= $editArticle['title'] ?>" <?php } ?>><br />
             <textarea placeholder="Contenu de l'article" name="content" rows="8" cols="45"><?php if($editionMode) { echo $editArticle['content']; } ?></textarea><br /> 
             <input type="file" name="miniature"><br />
-            <input type="submit" value="Publier">
+            <input type="submit" name="publish" value="<?php if($editionMode) { echo 'Enregistrer les modifications'; } else { echo 'Publier'; } ?>">
+            <?php if(!$editionMode) { ?>
+            <input type="submit" name="save" value="Enregistrer comme brouillon">
+            <?php } ?>
         </form>
 
         <div id="errorArea">

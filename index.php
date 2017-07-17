@@ -29,6 +29,10 @@ if(isset($_GET['p']) AND !empty($_GET['p'])) {
 			include('pages/deconnection.php');
 			break;
 
+		case 'profil':
+			include('pages/profil.php');
+			break;
+
 		default:
 			include('pages/index.php');
 			break;

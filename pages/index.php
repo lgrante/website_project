@@ -4,7 +4,7 @@ session_start();
 
 include_once('inc/connection_bdd.php');
 
-$articles = $bdd->query('SELECT * FROM articles ORDER BY date_time_publication DESC'); // On récupère tous les articles de la table.
+$articles = $bdd->query('SELECT * FROM articles WHERE published = 1 ORDER BY date_time_publication DESC'); // On récupère tous les articles de la table qui sont publié.
 
 ?>
 <!DOCTYPE html>
@@ -48,12 +48,16 @@ $articles = $bdd->query('SELECT * FROM articles ORDER BY date_time_publication D
                         <a href="index.php?p=article&amp;id=<?= $article['id'] ?>">
                         <?= $article['title'] ?></a>
                     </h3>
-                    <i>Publié le <?= $article['date_time_publication'] ?> par <a href="#"><?= $author_id['username'] ?>.</a><br />
-                    <?php if($article['date_time_update'] != '0000-00-00 00:00:00' || is_null($article['date_time_update'])) { ?>
-                    Dernière modification le <?= $article['date_time_update'] ?>
+
+                    <i>Publié le <?= $article['date_time_publication'] ?> par <a href="index.php?p=profil&amp;userid=<?= $article['author_id'] ?>"><?= $author_id['username'] ?>.</a><br />
+                    <?php if(!is_null($article['date_time_update'])) { ?>
+                    Dernière modification le <?= $article['date_time_update'] ?><br>
                     <?php } ?></i><br />
+
                     <img src="<?= $currentPicturePath ?>" width="200">
+
                     <p><?= $contentPart ?><?php if($contentPart != $article['content']) { echo '...'; } ?><br /><i><a href="index.php?p=article&amp;id=<?= $article['id'] ?>">Lire la suite</a></i></p>
+
                     <?php if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) { 
                     if($article['author_id'] == $_SESSION['id'])  { ?>
                     <p>
