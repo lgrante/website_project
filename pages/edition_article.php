@@ -34,65 +34,77 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
         $content = htmlspecialchars($_POST['content']);
 
         if(isset($_POST['publish'])) { // On publie directement l'article.
+                    
+            if(!$editionMode) { // Si on est pas en mode édition on crée une nouvelle entrée dans la table correspondant à l'article.
 
-            if(!empty($_POST['title']) AND !empty($_POST['content'])) {
-                
-                if(!$editionMode) { // Si on est pas en mode édition on crée une nouvelle entrée dans la table correspondant à l'article.
+                if(!empty($_POST['title']) AND !empty($_POST['content'])) { // Pour la publication directe d'un article l'utilisateur est obligé de remplir tous les champs.
 
-                    if(isset($_FILES['miniature']) AND !empty($_FILES['miniature']['name'])) {
+                    $request = $bdd->prepare('INSERT INTO articles(title, author_id, content, date_time_publication, published) VALUES(:title, :author_id, :content, NOW(), 1)');
+                    $request->execute(array('title' => $title, 'author_id' => $_SESSION['id'], 'content' => $content));
 
-                        die('Hey');
-                        $request = $bdd->prepare('INSERT INTO articles(title, author_id, content, date_time_publication, published) VALUES(:title, :author_id, :content, NOW(), 1)');
-                        $request->execute(array('title' => $title, 'author_id' => $_SESSION['id'], 'content' => $content));
-                        $pictureId = $bdd->lastInsertId();
-                        $path = 'pictures/articles_miniatures/'. $pictureId . '.jpg';
-                        move_uploaded_file($_FILES['miniature']['tmp_name'], $path);
-                        header('Location: index.php');
+                    header('Location: index.php');
 
-                    }
+                } else {
 
-                } else { // Si on est en mode édition on met à jour l'entrée correspondant à l'article.
+                    $error = '<p style="color: red;">Veuille remplir tous les champs.</p>';
 
-                    //die('Hey you');
-                    if(isset($_FILES['miniature']) AND !empty($_FILES['miniature']['name'])) { // Si jamais l'utilisateur choisi une nouvelle image de miniature on supprime l'ancienne et on upload la nouvelle sur le serveur à la place.
-                        if($editArticle['published'] == 0) {
-
-                            $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW(), published = 1 WHERE id = :id');
-                            
-                        } else {
-
-                            $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
-
-                        }
-                        $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
-                        $pictureId = $editId; 
-                        $path = 'pictures/articles_miniatures/'. $pictureId . '.jpg';
-                        unlink($path);
-                        move_uploaded_file($_FILES['miniature']['tmp_name'], $path);
-                        header('Location: index.php?p=article&id=' . $editId);
-
-                    }
-
-                    $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
-                    $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
                 }
 
-            } else {
+            } else { // Si on est en mode édition on met à jour l'entrée correspondant à l'article.
 
-                $error = '<p style="color : red;">Veuillez remplir tous les champs avant d\'enregistrer votre article.</p>';
+                if($editArticle['published'] == 0) { // Si on publie un article qui était seulement un brouillon.
+
+                    $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_publication = NOW(), published = 1 WHERE id = :id');
+                                
+                } else { // Si on édite un article qui est déjà publié.
+
+                    $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
+
+                }
+
+                $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
+
+                header('Location: index.php?p=article&id=' . $editId);
 
             }
 
-        } else if(isset($_POST['save'])) { // L'article est seulement sauvegardé pour l'utilsateur.
+        } else if(isset($_POST['save'])) { // L'article est seulement sauvegardé pour l'utilisateur.
 
-            $request = $bdd->prepare('INSERT INTO articles(title, author_id, content, published) VALUES(:title, :author_id, :content, 0)');
-            $request->execute(array('title' => $title, 'author_id' => $_SESSION['id'], 'content' => $content));
-            $pictureId = $bdd->lastInsertId();
-            $path = 'pictures/articles_miniatures/'. $pictureId . '.jpg';
-            move_uploaded_file($_FILES['miniature']['tmp_name'], $path);
-            header('Location: index.php');
+            if(!$editionMode) { // Si c'est la rédaction du brouillon.
+
+                $request = $bdd->prepare('INSERT INTO articles(title, author_id, content, published) VALUES(:title, :author_id, :content, 0)');
+                $request->execute(array('title' => $title, 'author_id' => $_SESSION['id'], 'content' => $content));
+
+            } else { // Si on édite le brouillon sans pour autant le publier.
+
+                $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content WHERE id = :id');
+                $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
+
+            }
 
         }
+
+        if(isset($_FILES['miniature']) AND !empty($_FILES['miniature']['name'])) { // Si l'utilisateur veut ajouter une image de miniature à l'article ou la changer.
+
+            if($editionMode) {  // S'il la remplace.
+
+                $pictureId = $editId; 
+                $path = 'pictures/articles_miniatures/'. $pictureId . '.jpg';
+                unlink($path);
+
+            } else {  // S'il en ajoute une nouvelle.
+
+                $pictureId = $bdd->lastInsertId(); 
+                $path = 'pictures/articles_miniatures/'. $pictureId . '.jpg';
+
+            }
+
+        }
+
+        move_uploaded_file($_FILES['miniature']['tmp_name'], $path);
+
+        header('Location: index.php');
+
     }
 
 } else {
