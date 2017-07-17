@@ -36,6 +36,7 @@ if(isset($_GET['p']) AND !empty($_GET['p'])) {
 		default:
 			include('pages/index.php');
 			break;
+			
 	}
 
 } else {

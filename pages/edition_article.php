@@ -19,10 +19,13 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
         if($request->rowCount() == 1) {
             
             $editArticle = $request->fetch();
+
         } else {
             
             die('Erreur : l\'article n\'existe pas...');
+
         }
+
     }
 
     if(isset($_POST['title'], $_POST['content'])) { // Si on reçoit un requête post.
@@ -38,43 +41,64 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 
                     if(isset($_FILES['miniature']) AND !empty($_FILES['miniature']['name'])) {
 
+                        die('Hey');
                         $request = $bdd->prepare('INSERT INTO articles(title, author_id, content, date_time_publication, published) VALUES(:title, :author_id, :content, NOW(), 1)');
                         $request->execute(array('title' => $title, 'author_id' => $_SESSION['id'], 'content' => $content));
                         $pictureId = $bdd->lastInsertId();
                         $path = 'pictures/articles_miniatures/'. $pictureId . '.jpg';
                         move_uploaded_file($_FILES['miniature']['tmp_name'], $path);
                         header('Location: index.php');
+
                     }
+
                 } else { // Si on est en mode édition on met à jour l'entrée correspondant à l'article.
 
                     //die('Hey you');
                     if(isset($_FILES['miniature']) AND !empty($_FILES['miniature']['name'])) { // Si jamais l'utilisateur choisi une nouvelle image de miniature on supprime l'ancienne et on upload la nouvelle sur le serveur à la place.
-                        
+                        if($editArticle['published'] == 0) {
+
+                            $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW(), published = 1 WHERE id = :id');
+                            
+                        } else {
+
+                            $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
+
+                        }
+                        $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
                         $pictureId = $editId; 
                         $path = 'pictures/articles_miniatures/'. $pictureId . '.jpg';
                         unlink($path);
                         move_uploaded_file($_FILES['miniature']['tmp_name'], $path);
-                        $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
-                        $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
                         header('Location: index.php?p=article&id=' . $editId);
+
                     }
+
                     $request = $bdd->prepare('UPDATE articles SET title = :title, content = :content, date_time_update = NOW() WHERE id = :id');
                     $request->execute(array('title' => $title, 'content' => $content, 'id' => $editId));
                 }
+
             } else {
 
                 $error = '<p style="color : red;">Veuillez remplir tous les champs avant d\'enregistrer votre article.</p>';
+
             }
+
         } else if(isset($_POST['save'])) { // L'article est seulement sauvegardé pour l'utilsateur.
 
             $request = $bdd->prepare('INSERT INTO articles(title, author_id, content, published) VALUES(:title, :author_id, :content, 0)');
             $request->execute(array('title' => $title, 'author_id' => $_SESSION['id'], 'content' => $content));
+            $pictureId = $bdd->lastInsertId();
+            $path = 'pictures/articles_miniatures/'. $pictureId . '.jpg';
+            move_uploaded_file($_FILES['miniature']['tmp_name'], $path);
             header('Location: index.php');
+
         }
     }
+
 } else {
 
     header('Location: index.php?p=inscription');
+
 }
 
 ?>
@@ -102,12 +126,41 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
         <?php } ?>
 
         <form method="post" enctype="multipart/form-data">
-            <input type="text" placeholder="Titre de l'article" name="title" <?php if($editionMode) { ?> value="<?= $editArticle['title'] ?>" <?php } ?>><br />
-            <textarea placeholder="Contenu de l'article" name="content" rows="8" cols="45"><?php if($editionMode) { echo $editArticle['content']; } ?></textarea><br /> 
-            <input type="file" name="miniature"><br />
-            <input type="submit" name="publish" value="<?php if($editionMode) { echo 'Enregistrer les modifications'; } else { echo 'Publier'; } ?>">
-            <?php if(!$editionMode) { ?>
-            <input type="submit" name="save" value="Enregistrer comme brouillon">
+            <input type="text" placeholder="Titre de l'article" name="title" <?php if($editionMode) { ?> value="<?= $editArticle['title'] ?>" <?php } ?>><br>
+
+            <textarea placeholder="Contenu de l'article" name="content" rows="8" cols="45"><?php if($editionMode) { echo $editArticle['content']; } ?></textarea><br> 
+
+            <label for="miniature">
+                <?php if(!$editionMode) { ?>
+
+                    Ajouter une image de miniature pour votre article
+
+                <?php } else { ?>
+
+                    Vous pouvez toujours changer l'image de miniature de votre article
+
+                <?php } ?>
+            </label><br>
+            <input type="file" name="miniature"><br>
+
+            <?php if(isset($editArticle) AND $editArticle['published'] == 1) { ?>
+
+                <input type="submit" name="publish" value="Enregistrer les modifications">
+
+            <?php } else { ?>
+
+                <input type="submit" name="publish" value="Publier">
+                
+                <?php if($editionMode) { ?>
+
+                    <input type="submit" name="save" value="Enregistrer les modifications">
+
+                <?php } else { ?> 
+
+                    <input type="submit" name="save" value="Enregistrer comme brouillon">
+
+                <?php } ?>
+
             <?php } ?>
         </form>
 

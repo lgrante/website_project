@@ -8,6 +8,7 @@ $request = $bdd->query('SELECT MAX(id) AS max_id FROM articles');
 $maxId = $request->fetch();
 
 if(isset($_GET['id']) AND !empty($_GET['id']) AND $_GET['id'] <= $maxId['max_id']) { // Si on a bien l'id de l'article qui a été envoyé on récupère toute ses informations pour les afficher ensuite.
+
     $idArticle = htmlspecialchars($_GET['id']);
     $idArticle = (int) $idArticle;
 
@@ -17,12 +18,14 @@ if(isset($_GET['id']) AND !empty($_GET['id']) AND $_GET['id'] <= $maxId['max_id'
     
     $currentPicturePath = 'pictures/articles_miniatures/' . $article['id'] . '.jpg';
 
-    $author = $bdd->prepare('SELECT username FROM users WHERE id = :author_id');
-    $author->execute(array('author_id' => $article['author_id']));
-    $author_username = $author->fetch();
+    $request = $bdd->prepare('SELECT id, username FROM users WHERE id = :author_id');
+    $request->execute(array('author_id' => $article['author_id']));
+    $author = $request->fetch();
+
 } else {
     
     header('Location: index.php');
+
 }
 
 ?>
@@ -35,22 +38,29 @@ if(isset($_GET['id']) AND !empty($_GET['id']) AND $_GET['id'] <= $maxId['max_id'
     </head>
         
     <body>
-        <a href="index.php">Retour à la page d'acceuil</a>
+        <p><a href="index.php">Retour à la page d'acceuil</a></p>
+
         <div>
-            <?php if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) { 
-            if($article['author_id'] == $_SESSION['id']) { ?>
-            <ul>
-                <li>
-                    <a href="index.php?p=edition_article&amp;edit=<?= $article['id'] ?>">Modifier</a>
-                </li>
-                <li>
-                    <a href="index.php?p=supprimer_article&amp;id=<?= $article['id'] ?>">Supprimer</a>
-                </li>
-            </ul>
+            <?php if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
+
+                if($article['author_id'] == $_SESSION['id']) { ?>
+
+                    <ul>
+                        <li>
+                            <a href="index.php?p=edition_article&amp;edit=<?= $article['id'] ?>">Modifier</a>
+                        </li>
+                        <li>
+                            <a href="index.php?p=supprimer_article&amp;id=<?= $article['id'] ?>">Supprimer</a>
+                        </li>
+                    </ul>
+
             <?php }} ?>
+            
             <img src="<?= $currentPicturePath ?>" width="200">
+
             <h3><?= $article['title'] ?></h3>
-            <h4>Auteur : <?= $author_username['username'] ?></h4>
+
+            <h4>Auteur : <a href="index.php?p=profil&amp;userid=<?= $author['id'] ?>"><?= $author['username'] ?></a></h4>
         </div>
         <div>
             <p><?= nl2br($article['content']) ?></p>
