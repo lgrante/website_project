@@ -19,6 +19,22 @@ if(isset($_GET['userid']) AND !empty($_GET['userid'])) {
 
 }
 
+if(isset($_GET['publish']) AND !empty($_GET['publish'])) {
+
+    $id = htmlspecialchars($_GET['publish']);
+    $id = (int) $id;
+
+    $request = $bdd->prepare('SELECT * FROM articles WHERE id = :id');
+    $request->execute(array('id' => $id));
+    $article = $request->fetch();
+
+    $request = $bdd->prepare('UPDATE articles SET title = :title, author_id = :author_id, content = :content, date_time_publication = NOW(), published = 1 WHERE id = :id');
+    $request->execute(array('title' => $article['title'], 'author_id' => $_SESSION['id'], 'content' => $article['content'], 'id' => $id));
+
+    header('Location: index.php?p=profil&userid=' . $_SESSION['id']);
+
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -79,7 +95,7 @@ if(isset($_GET['userid']) AND !empty($_GET['userid'])) {
                         <?php } else { ?>
 
                             <i>Non publié pour l'instant.<br>
-                            <a href="#">Publier</a></i><br>
+                            <a href="index.php?p=profil&amp;userid=<?= $_GET['userid'] ?>&amp;publish=<?= $article['id'] ?>">Publier</a></i><br>
 
                         <?php } ?>
 
@@ -93,7 +109,7 @@ if(isset($_GET['userid']) AND !empty($_GET['userid'])) {
                                 <a href="index.php?p=edition_article&amp;edit=<?= $article['id'] ?>">Modifier | </a>
                                 <a href="index.php?p=supprimer_article&amp;id=<?= $article['id'] ?>">Supprimer</a>
                             </p>
-                            
+
                         <?php } ?>
                     </li>
                 <?php } ?>
