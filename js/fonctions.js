@@ -4,18 +4,33 @@ function emailValidate(email) {
 	return regex.test(email);
 }
 
-function ajaxGet(url, callback) {
-	var request = new XMLHttpRequest();
-	request.open("GET", url);
-	request.addEventListener("load", function () {
-		if(request.status >= 200 && request.status < 400) {
-			callback(request.responseText);
+function getXMLHttpRequest() {
+
+	var xhr = null;
+
+	if(window.getXMLHttpRequest || window.ActiveXObject) {
+
+		if(window.ActiveXObject) {
+
+			try {
+
+				xhr = new ActiveXObject('Msxml2.XMLHTTP');
+
+			} catch(e) {
+
+				xhr = new ActiveXObject('Microsoft.XMLHTTP');
+
+			}
+
 		} else {
-			console.error(request.status + " " + request.statusText + " " + url);
+
+			console.log('Your browser don\' support XMLHttpRequest object...');
+			return null;
+
 		}
-	});
-	request.addEventListener("error", function () {
-		console.error('Erreur réseau');
-	});
-	request.send(null);
+
+		return xhr;
+
+	}
+
 }

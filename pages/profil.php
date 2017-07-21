@@ -4,6 +4,12 @@ session_start();
 
 include_once('inc/connection_bdd.php');
 
+if(isset($_POST['changeUsername'])) {
+
+    die('Hey');
+
+}
+
 if(isset($_GET['userid']) AND !empty($_GET['userid'])) {
 
     $userid = htmlspecialchars($_GET['userid']);
@@ -11,6 +17,8 @@ if(isset($_GET['userid']) AND !empty($_GET['userid'])) {
     $request = $bdd->prepare('SELECT * FROM users WHERE id = :userid');
     $request->execute(array('userid' => $userid));
     $user = $request->fetch();
+
+    $currentProfilePicturePath = 'pictures/profiles_pictures/' . $user['id'] . '.jpg';
 
 } else {
 
@@ -54,10 +62,13 @@ if(isset($_GET['publish']) AND !empty($_GET['publish'])) {
             <li>
                 <h4><a href="index.php?p=profil&amp;userid=<?= $user['id'] ?>&amp;tab=articles">Articles</a></h4>
             </li>
+            <li>
+                <h4><a href="index.php?p=profil&amp;userid=<?= $user['id'] ?>&amp;tab=settings">Paramètres</a></h4>
+            </li>
 
         <?php if(isset($_GET['tab']) AND $_GET['tab'] == 'profil') { ?>
 
-            <p>Informations à propos de l'utilsateur...</p>
+            <p>Informations sur l'utilisateur...</p>
 
         <?php } else if(isset($_GET['tab']) AND $_GET['tab'] == 'articles') {
 
@@ -72,6 +83,10 @@ if(isset($_GET['publish']) AND !empty($_GET['publish'])) {
             }
 
             $request->execute(array('author_id' => $user['id'])); ?>
+
+            <h4>
+                <a href="index.php?p=edition_article">Nouvel article !</a>
+            </h4>
 
             <ul>
                 <?php while($article = $request->fetch()) { 
@@ -114,7 +129,90 @@ if(isset($_GET['publish']) AND !empty($_GET['publish'])) {
                     </li>
                 <?php } ?>
             </ul> 
-            <?php } ?>    
+        <?php } else if(isset($_GET['tab']) AND $_GET['tab'] == 'settings') { 
+
+            $usernamesTaken = $bdd->query('SELECT username, email FROM users');
+
+            $result = array();
+
+            while ($a = $usernamesTaken->fetch()) {
+                $result[] = $a;
+            }
+
+            $resultJson = json_encode($result);
+            file_put_contents('json/users_list.json', $resultJson);
+
+            ?>
+
+            <div class="changeUsername">
+                <h3>Votre nom d'utilisateur</h3>
+                <form method="post" id="formUsername">
+                    <table>
+                        <tr>
+                            <td><label for="currentUsername">Nouveau nom d'utilisateur</label></td>
+                            <td><input type="text" name="currentUsername"></td>
+                            <td><span id="helpCurrentUsername"></span></td>
+                        </tr>
+                        <tr>
+                            <td><br><input type="submit" name="changeUsername" value="Enregistrer les modifications"></td>
+                        </tr>
+                    </table>
+                </form>
+            </div><br>
+
+            <div class="changeEmail">
+                <h3>Votre email</h3>
+                <form method="post" id="formEmail">
+                    <table>
+                        <tr>
+                            <td><label for="currentEmail">Adresse email actuelle</label></td>
+                            <td><input type="text" name="currentEmail"></td>
+                            <td><span id="helpCurrentEmail"></span></td>
+                        </tr>
+                        <tr>
+                            <td><label for="newEmail">Nouvel email</label></td>
+                            <td><input type="text" name="newEmail"></td>
+                            <td><span id="helpNewEmail"></span></td>
+                        </tr>
+                        <tr>
+                            <td><br><input type="submit" name="changeEmail" value="Enregistrer les modifications"></td>
+                        </tr>
+                    </table>
+                </form>
+            </div><br>
+
+            <div class="changePassword">
+                <h3>Changer votre mot de passe</h3>
+                <form method="post" id="formPassword">
+                    <table>
+                        <tr>
+                            <td><label for="formerPassword">Ancien mot de passe</label></td>
+                            <td><input type="password" name="formerPassword"></td>
+                            <td><span id="helpFormerPassword"></span></td>
+                        </tr>
+                        <tr>
+                            <td><label for="newPassword">Nouveau mot de passe</label></td>
+                            <td><input type="password" name="newPassword"></td>
+                            <td><span id="helpNewPassword"></span></td>
+                        </tr>
+                        <tr>
+                            <td><label for="newPasswordConfirmation">Confirmation</label></td>
+                            <td><input type="password" name="newPasswordConfirmation"></td>
+                            <td><span id="helpNewPasswordConfirmation"></span></td>
+                        </tr>
+                        <tr>
+                            <td><br><input type="submit" name="changePassword" value="Enregistrer les modifications"></td>
+                        </tr>
+                    </table>
+                </form>
+            </div><br>
+        <?php } ?>
         </ul>
+        <script type="text/javascript">
+            var currentUserEmail = "<?php $user['email'] ?>";
+            var currentuserPassword = "<?php $user['password'] ?>";
+        </script>
+        <script type="text/javascript" src="js/fonctions.js"></script>
+        <script type="text/javascript" src="js/profile_settings.js"></script>
 	</body>
 </html>

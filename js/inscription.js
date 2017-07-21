@@ -41,7 +41,8 @@ ajaxGet("json/users_list.json", function(response) {
 
 			correctFields[0] = true;
 
-			emailElt.style.border = '2px solid green'; 
+			emailElt.style.border = '2px solid green';
+
 		} else {
 
 			correctFields[0] = false;
@@ -50,9 +51,11 @@ ajaxGet("json/users_list.json", function(response) {
 			if(emailTaken) {
 
 				message = 'Cette email est déjà utilisée';
+
 			} else {
 
 				message = 'Email non valide';
+
 			}
 		}
 
@@ -70,6 +73,7 @@ ajaxGet("json/users_list.json", function(response) {
 			if(results[i].username === e.target.value) {
 
 				usernameTaken = true;
+
 			}
 		}
 		if(!usernameTaken) {
@@ -77,12 +81,14 @@ ajaxGet("json/users_list.json", function(response) {
 			correctFields[1] = true;
 
 			usernameElt.style.border = '2px solid green';
+
 		} else {
 
 			correctFields[1] = false;
 
 			helpUsernameElt.textContent = 'Ce nom d\'utilisateur est déjà utilisé';
 			usernameElt.style.border = '2px solid red';
+
 		}
 	});
 });
@@ -101,6 +107,7 @@ passwordElt.addEventListener("input", function (e) {
 		passwordElt.style.border = '2px solid red';
 		message = 'Très faible';
 		helpPasswordElt.style.color = 'red';
+
 	} else {
 
 		correctFields[2] = true;
@@ -111,13 +118,16 @@ passwordElt.addEventListener("input", function (e) {
 
 			message = 'Moyen (nous vous conseillons un mot de passe plus long)';
 			helpPasswordElt.style.color = 'orange';
+
 		} else if(passwordLength >= 8 && passwordLength < 10) {
 
 			message = 'Fort';
 			helpPasswordElt.style.color = 'green';
+
 		} else {
 
 			message = 'Très fort';
+
 		}
 	}
 
@@ -143,10 +153,12 @@ passwordCheckElt.addEventListener("input", function (e) {
 		correctFields[3] = false;
 
 		passwordCheckElt.style.border = '2px solid red';
+
 		if(passwordCheck !== passwordElt.value) {
 
 			helpPasswordCheckElt.textContent = 'Les deux mots de passe ne correspondent pas';
 			helpPasswordCheckElt.style.color = 'red';
+
 		}
 	} else {
 
@@ -154,6 +166,7 @@ passwordCheckElt.addEventListener("input", function (e) {
 
 		passwordCheckElt.style.border = '2px solid green';
 		helpPasswordCheckElt.textContent = '';
+
 	}
 });
 
@@ -166,11 +179,13 @@ form.addEventListener("submit", function(e) {
 		if(correctField) {
 
 			checkedFields++;
+
 		}  
 	});
 	if(checkedFields === correctFields.length) {
 
 		console.log('Tous les champs sont corrects');
+		
 	} else {
 
 		e.preventDefault();
@@ -178,8 +193,11 @@ form.addEventListener("submit", function(e) {
 		helpEmailElt.style.fontWeight = 'bold';
 		helpUsernameElt.style.fontWeight = 'bold';
 		helpPasswordCheckElt.style.fontWeight = 'bold';
+
 		if(passwordElt.value.length < 6) {
+
 			helpPasswordElt.style.fontWeight = 'bold';
+			
 		}
 	}
 });
