@@ -1,203 +1,103 @@
-var form = document.querySelector('form');
+var form = new Form(document.querySelector('form'), 5);
 
-var emailElt = form.elements.email;
-var usernameElt = form.elements.username;
-var passwordElt = form.elements.password;
-var passwordCheckElt = form.elements.password_check;
-var submitElt = document.getElementById("submitRegister");
+form.fields.email.addEventListener('input', function(e) {
 
-var helpEmailElt = document.getElementById('helpEmail');
-var helpUsernameElt = document.getElementById('helpUsername');
-var helpPasswordElt = document.getElementById('helpPassword');
-var helpPasswordCheckElt = document.getElementById('helpPasswordCheck');
+	var helpEmail = document.getElementById('helpEmail');
+    form.isTaken('newEmail', e.target.value, 0, function() {
 
-var correctFields = [false, false, false, false];
-var message = '';
+        form.isMailCorrect(e.target.value, 1);
+        if(!form.checks[0] || !form.checks[1]) {
 
-helpEmailElt.style.color = 'red';
-helpUsernameElt.style.color = 'red';
+            if(!form.checks[0]) {
 
-ajaxGet("json/users_list.json", function(response) {
+                form.displayMessage(helpEmail, 'Cet email est déjà utilisé', 'red');
+                form.fields.email.style.border = '2px solid red';
 
-	var results = JSON.parse(response);
+            } else {
 
-	emailElt.addEventListener("input", function (e) { // TO DO : Remplacer ces morceaux de code par une fonction pour éviter les répétitions.
+                form.displayMessage(helpEmail, 'Email invalide', 'red');
+                form.fields.email.style.border = '2px solid red';
 
-		helpEmailElt.textContent = '';
-		message = '';
-		helpEmailElt.style.fontWeight = 'normal';
+            }
 
-		var email = e.target.value;
-		var emailTaken = false;
+        } else {
 
-		for(i = 0; i<results.length; i++) {
+            form.displayMessage(helpEmail, '');
+            form.fields.email.style.border = '2px solid green';
 
-			if(results[i].email === email) {
+        }
 
-				emailTaken = true;
-			}
-		}
-		if(!emailTaken && emailValidate(email)) {
+        form.formAction();
 
-			correctFields[0] = true;
+    });
 
-			emailElt.style.border = '2px solid green';
-
-		} else {
-
-			correctFields[0] = false;
-			emailElt.style.border = '2px solid red';
-
-			if(emailTaken) {
-
-				message = 'Cette email est déjà utilisée';
-
-			} else {
-
-				message = 'Email non valide';
-
-			}
-		}
-
-		helpEmailElt.textContent = message;
-	});
-
-	usernameElt.addEventListener("input", function (e) {
-
-		helpUsernameElt.textContent = '';
-		helpUsernameElt.style.fontWeight = 'normal';
-		var usernameTaken = false;
-
-		for(i = 0; i<results.length; i++) {
-
-			if(results[i].username === e.target.value) {
-
-				usernameTaken = true;
-
-			}
-		}
-		if(!usernameTaken) {
-
-			correctFields[1] = true;
-
-			usernameElt.style.border = '2px solid green';
-
-		} else {
-
-			correctFields[1] = false;
-
-			helpUsernameElt.textContent = 'Ce nom d\'utilisateur est déjà utilisé';
-			usernameElt.style.border = '2px solid red';
-
-		}
-	});
 });
 
-passwordElt.addEventListener("input", function (e) {
+form.fields.username.addEventListener('input', function (e) {
 
-	var passwordLength = e.target.value.length;
-	helpPasswordElt.textContent = '';
-	message = '';
-	helpPasswordElt.style.fontWeight = 'normal';
+    form.isTaken('username', e.target.value, 2, function () {
 
-	if(passwordLength >= 0 && passwordLength < 6) {
+        var message = (form.checks[2]) ? '' : 'Ce nom d\'utilisateur est déjà utilisé';
+        var borderColor = (form.checks[2]) ? 'green' : 'red';
+        form.displayMessage(document.getElementById('helpUsername'), message, 'red');
+        form.fields.username.style.border = '2px solid ' + borderColor;
+        form.formAction();
 
-		correctFields[2] = false;
+    });
 
-		passwordElt.style.border = '2px solid red';
-		message = 'Très faible';
-		helpPasswordElt.style.color = 'red';
-
-	} else {
-
-		correctFields[2] = true;
-		
-		passwordElt.style.border = '2px solid green';
-
-		if(passwordLength >= 6 && passwordLength < 8) {
-
-			message = 'Moyen (nous vous conseillons un mot de passe plus long)';
-			helpPasswordElt.style.color = 'orange';
-
-		} else if(passwordLength >= 8 && passwordLength < 10) {
-
-			message = 'Fort';
-			helpPasswordElt.style.color = 'green';
-
-		} else {
-
-			message = 'Très fort';
-
-		}
-	}
-
-	if(passwordCheckElt.value !== '') {
-
-		if(e.target.value !== passwordCheckElt.value) {
-
-			helpPasswordCheckElt.textContent = 'Les deux mots de passe ne correspondent pas';
-		}
-	}
-
-	helpPasswordElt.textContent = 'Force du mot de passe : ' + message;
 });
 
-passwordCheckElt.addEventListener("input", function (e) {
+form.fields.password.addEventListener('input', function (e) {
 
-	var passwordCheck = e.target.value;
-	helpPasswordCheckElt.textContent = '';
-	helpPasswordCheckElt.style.fontWeight = 'normal';
+    form.isPasswordCorrect(e.target.value, 3);
+    form.isSamePassword(e.target.value, form.fields['passwordConfirm'].value, 4);
+    var message = '';
+    var color;
+    var borderColor;
+    if(form.checks[3]) {
 
-	if(passwordCheck !== passwordElt.value || passwordElt.value.length < 6) {
+        var passwordLength = e.target.value.length;
+        borderColor = 'green';
+        if(passwordLength >= 6 && passwordLength < 8) {
 
-		correctFields[3] = false;
+            message = 'Moyen (un mot de passe plus long est fortement recommandé)';
+            color = 'orange';
 
-		passwordCheckElt.style.border = '2px solid red';
+        } else if(passwordLength >= 8 && passwordLength < 10) {
 
-		if(passwordCheck !== passwordElt.value) {
+            message = 'Fort';
+            color = 'green';
 
-			helpPasswordCheckElt.textContent = 'Les deux mots de passe ne correspondent pas';
-			helpPasswordCheckElt.style.color = 'red';
+        } else if(passwordLength > 10) {
 
-		}
-	} else {
+            message = 'Très fort';
+            color = 'green';
 
-		correctFields[3] = true;
+        }
 
-		passwordCheckElt.style.border = '2px solid green';
-		helpPasswordCheckElt.textContent = '';
+    } else {
 
-	}
+        message = 'Très faible';
+        borderColor = 'red';
+        color = 'red'
+
+    }
+    form.displayMessage(document.getElementById('helpPassword'), message, color);
+    form.fields.password.style.border = '2px solid ' + borderColor;
+    var message = (form.checks[4]) ? '' : 'Les deux mots de passe ne correspondent pas';
+    form.displayMessage(document.getElementById('helpPasswordConfirm'), message, 'red');
+
+    form.formAction();
+
 });
 
-form.addEventListener("submit", function(e) {
+form.fields.passwordConfirm.addEventListener('input', function(e) {
 
-	var checkedFields = 0;
+    form.isSamePassword(e.target.value, form.fields['password'].value, 4);
+    var message = (form.checks[4]) ? '' : 'Les deux mots de passe ne correspondent pas';
+    var borderColor = (form.checks[4]) ? 'green' : 'red';
+    form.displayMessage(document.getElementById('helpPasswordConfirm'), message, 'red');
+    form.fields.passwordConfirm.style.border = '2px solid ' + borderColor; 
+    form.formAction();
 
-	correctFields.forEach(function (correctField) {
-
-		if(correctField) {
-
-			checkedFields++;
-
-		}  
-	});
-	if(checkedFields === correctFields.length) {
-
-		console.log('Tous les champs sont corrects');
-		
-	} else {
-
-		e.preventDefault();
-
-		helpEmailElt.style.fontWeight = 'bold';
-		helpUsernameElt.style.fontWeight = 'bold';
-		helpPasswordCheckElt.style.fontWeight = 'bold';
-
-		if(passwordElt.value.length < 6) {
-
-			helpPasswordElt.style.fontWeight = 'bold';
-			
-		}
-	}
-});
+}); 

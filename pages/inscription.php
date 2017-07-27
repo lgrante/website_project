@@ -17,7 +17,7 @@ if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
     $resultJson = json_encode($result);
 	file_put_contents('json/users_list.json', $resultJson);
 
-	if(isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['password_check'])) {
+	if(isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['passwordConfirm'])) {
 		$email = htmlspecialchars($_POST['email']);
 		$username = htmlspecialchars($_POST['username']);
 		$password = htmlspecialchars($_POST['password']);
@@ -63,9 +63,9 @@ if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 	    			<td><span id="helpPassword"></span></td>
 	    		</tr>
 	    		<tr>
-	    			<td><label for="password_check">Confirmation du mot de passe :</label></td>
-	    			<td><input type="password" name="password_check"></td>
-	    			<td><span id="helpPasswordCheck"></span></td>
+	    			<td><label for="passwordConfirm">Confirmation du mot de passe :</label></td>
+	    			<td><input type="password" name="passwordConfirm"></td>
+	    			<td><span id="helpPasswordConfirm"></span></td>
 	    		</tr>
 	    		<tr>
 	    			<td></td>
@@ -77,7 +77,7 @@ if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 	    	<div id="errorArea">
 	    	</div>
     	</form>
-    	<script type="text/javascript" src="js/fonctions.js"></script>
+    	<script type="text/javascript" src="js/functions.js"></script>
     	<script type="text/javascript" src="js/inscription.js"></script>
 	</body>
 </html>
