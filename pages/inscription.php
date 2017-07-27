@@ -77,7 +77,7 @@ if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 	    	<div id="errorArea">
 	    	</div>
     	</form>
-    	<script type="text/javascript" src="js/functions.js"></script>
-    	<script type="text/javascript" src="js/inscription.js"></script>
+    	<script type="text/javascript" src="assets/js/functions.js"></script>
+    	<script type="text/javascript" src="assets/js/inscription.js"></script>
 	</body>
 </html>

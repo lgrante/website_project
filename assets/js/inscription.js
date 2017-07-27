@@ -2,7 +2,7 @@ var form = new Form(document.querySelector('form'), 5);
 
 form.fields.email.addEventListener('input', function(e) {
 
-	var helpEmail = document.getElementById('helpEmail');
+    var helpEmail = document.getElementById('helpEmail');
     form.isTaken('newEmail', e.target.value, 0, function() {
 
         form.isMailCorrect(e.target.value, 1);
@@ -69,7 +69,7 @@ form.fields.password.addEventListener('input', function (e) {
             color = 'green';
 
         } else if(passwordLength > 10) {
-
+            
             message = 'Très fort';
             color = 'green';
 

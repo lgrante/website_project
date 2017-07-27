@@ -16,7 +16,7 @@ if(isset($_GET['id']) AND !empty($_GET['id']) AND $_GET['id'] <= $maxId['max_id'
     $request->execute(array('id' => $idArticle));
     $article = $request->fetch();
     
-    $currentPicturePath = 'pictures/articles_miniatures/' . $article['id'] . '.jpg';
+    $currentPicturePath = 'assets/pictures/articles_miniatures/' . $article['id'] . '.jpg';
 
     $request = $bdd->prepare('SELECT id, username FROM users WHERE id = :author_id');
     $request->execute(array('author_id' => $article['author_id']));

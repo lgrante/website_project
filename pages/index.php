@@ -49,7 +49,7 @@ $articles = $bdd->query('SELECT * FROM articles WHERE published = 1 ORDER BY dat
                 $author->execute(array('author_id' => $article['author_id']));
                 $author_id = $author->fetch();
 
-                $currentPicturePath = 'pictures/articles_miniatures/' . $article['id'] . '.jpg'; ?> 
+                $currentPicturePath = 'assets/pictures/articles_miniatures/' . $article['id'] . '.jpg'; ?> 
 
                 <li>
                     <h3>

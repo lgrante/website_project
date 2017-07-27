@@ -89,13 +89,13 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
             if($editionMode) {  // S'il la remplace.
 
                 $pictureId = $editId; 
-                $path = 'pictures/articles_miniatures/'. $pictureId . '.jpg';
+                $path = 'assets/pictures/articles_miniatures/'. $pictureId . '.jpg';
                 unlink($path);
 
             } else {  // S'il en ajoute une nouvelle.
 
                 $pictureId = $bdd->lastInsertId(); 
-                $path = 'pictures/articles_miniatures/'. $pictureId . '.jpg';
+                $path = 'assets/pictures/articles_miniatures/'. $pictureId . '.jpg';
 
             }
 

@@ -18,7 +18,7 @@ if(isset($_GET['userid']) AND !empty($_GET['userid'])) {
     $request->execute(array('userid' => $userid));
     $user = $request->fetch();
 
-    $currentProfilePicturePath = 'pictures/profiles_pictures/' . $user['id'] . '.jpg';
+    $currentProfilePicturePath = 'assets/pictures/profiles_pictures/' . $user['id'] . '.jpg';
 
 } else {
 
@@ -92,7 +92,7 @@ if(isset($_GET['publish']) AND !empty($_GET['publish'])) {
                 <?php while($article = $request->fetch()) { 
 
                     $contentPart = substr($article['content'], 0, 150); 
-                    $currentPicturePath = 'pictures/articles_miniatures/' . $article['id'] . '.jpg'; ?>
+                    $currentPicturePath = 'assets/pictures/articles_miniatures/' . $article['id'] . '.jpg'; ?>
 
                     <li>
                         <h3>
@@ -208,7 +208,7 @@ if(isset($_GET['publish']) AND !empty($_GET['publish'])) {
             </div><br>
         <?php } ?>
         </ul>
-        <script type="text/javascript" src="js/functions.js"></script>
-        <script type="text/javascript" src="js/profile_settings.js"></script>
+        <script type="text/javascript" src="assets/js/functions.js"></script>
+        <script type="text/javascript" src="assets/js/profile_settings.js"></script>
 	</body>
 </html>
