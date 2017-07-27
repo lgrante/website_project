@@ -17,7 +17,7 @@ $articles = $bdd->query('SELECT * FROM articles WHERE published = 1 ORDER BY dat
         
     <body>
         <h4>
-            <a href="index.php?p=edition_article">Nouvel article !</a>
+            <a href="index.php?p=articleEdition">Nouvel article !</a>
         </h4>
 
         <?php if(isset($_SESSION['id'])) {
@@ -28,14 +28,14 @@ $articles = $bdd->query('SELECT * FROM articles WHERE published = 1 ORDER BY dat
 
             <?php } ?>
             <ul>
-                <li><a href="index.php?p=profil&amp;userid=<?= $_SESSION['id'] ?>"><?= $_SESSION['username'] ?></a></li>
-                <li><a href="index.php?p=deconnection">Se déconnecter</a></li>
+                <li><a href="index.php?p=profile&amp;userid=<?= $_SESSION['id'] ?>"><?= $_SESSION['username'] ?></a></li>
+                <li><a href="index.php?p=logingOut">Se déconnecter</a></li>
             </ul>
         <?php } else { ?>
 
             <ul>
-                <li><a href="index.php?p=inscription">S'inscire</a></li>
-                <li><a href="index.php?p=connection">Se connecter</a></li>
+                <li><a href="index.php?p=registration">S'inscire</a></li>
+                <li><a href="index.php?p=logingIn">Se connecter</a></li>
             </ul>
 
         <?php } ?>
@@ -57,7 +57,7 @@ $articles = $bdd->query('SELECT * FROM articles WHERE published = 1 ORDER BY dat
                         <?= $article['title'] ?></a>
                     </h3>
 
-                    <i>Publié le <?= $article['date_time_publication'] ?> par <a href="index.php?p=profil&amp;userid=<?= $article['author_id'] ?>"><?= $author_id['username'] ?>.</a><br>
+                    <i>Publié le <?= $article['date_time_publication'] ?> par <a href="index.php?p=profile&amp;userid=<?= $article['author_id'] ?>"><?= $author_id['username'] ?>.</a><br>
                     <?php if(!is_null($article['date_time_update'])) { ?>
                         Dernière modification le <?= $article['date_time_update'] ?><br>
                     <?php } ?></i><br>
@@ -70,8 +70,8 @@ $articles = $bdd->query('SELECT * FROM articles WHERE published = 1 ORDER BY dat
                     <?php if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email']) AND $article['author_id'] == $_SESSION['id']) { ?>
 
                         <p>
-                            <a href="index.php?p=edition_article&amp;edit=<?= $article['id'] ?>">Modifier | </a>
-                            <a href="index.php?p=supprimer_article&amp;id=<?= $article['id'] ?>">Supprimer</a>
+                            <a href="index.php?p=articleEdition&amp;edit=<?= $article['id'] ?>">Modifier | </a>
+                            <a href="index.php?p=removeArticle&amp;id=<?= $article['id'] ?>">Supprimer</a>
                         </p>
                         
                     <?php } ?>

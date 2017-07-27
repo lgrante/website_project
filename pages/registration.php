@@ -17,7 +17,7 @@ if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 		$request = $bdd->prepare('INSERT INTO users (username, email, password, date_time_registration) VALUES(:username, :email, :password, NOW())');
 		$request->execute(array('username' => $username, 'email' => $email, 'password' => $hashedPassword));
 
-		header('Location: index.php?p=connection&first_connection');
+		header('Location: index.php?p=logingIn&first_connection');
 	}
 } else {
 
@@ -67,6 +67,6 @@ if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 	    	</div>
     	</form>
     	<script type="text/javascript" src="assets/js/functions.js"></script>
-    	<script type="text/javascript" src="assets/js/inscription.js"></script>
+    	<script type="text/javascript" src="assets/js/registration.js"></script>
 	</body>
 </html>

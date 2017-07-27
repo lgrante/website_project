@@ -109,7 +109,7 @@ if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 
 } else {
 
-    header('Location: index.php?p=inscription');
+    header('Location: index.php?p=registration');
 
 }
 

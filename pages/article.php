@@ -50,7 +50,7 @@ if(isset($_GET['id']) AND !empty($_GET['id']) AND $_GET['id'] <= $maxId['max_id'
                             <a href="index.php?p=edition_article&amp;edit=<?= $article['id'] ?>">Modifier</a>
                         </li>
                         <li>
-                            <a href="index.php?p=supprimer_article&amp;id=<?= $article['id'] ?>">Supprimer</a>
+                            <a href="index.php?p=removeArticle&amp;id=<?= $article['id'] ?>">Supprimer</a>
                         </li>
                     </ul>
 
@@ -60,7 +60,7 @@ if(isset($_GET['id']) AND !empty($_GET['id']) AND $_GET['id'] <= $maxId['max_id'
 
             <h3><?= $article['title'] ?></h3>
 
-            <h4>Auteur : <a href="index.php?p=profil&amp;userid=<?= $author['id'] ?>"><?= $author['username'] ?></a></h4>
+            <h4>Auteur : <a href="index.php?p=profile&amp;userid=<?= $author['id'] ?>"><?= $author['username'] ?></a></h4>
         </div>
         <div>
             <p><?= nl2br($article['content']) ?></p>

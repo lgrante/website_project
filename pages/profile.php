@@ -39,7 +39,7 @@ if(isset($_GET['publish']) AND !empty($_GET['publish'])) {
     $request = $bdd->prepare('UPDATE articles SET title = :title, author_id = :author_id, content = :content, date_time_publication = NOW(), published = 1 WHERE id = :id');
     $request->execute(array('title' => $article['title'], 'author_id' => $_SESSION['id'], 'content' => $article['content'], 'id' => $id));
 
-    header('Location: index.php?p=profil&userid=' . $_SESSION['id']);
+    header('Location: index.php?p=profile&userid=' . $_SESSION['id']);
 
 }
 
@@ -57,16 +57,16 @@ if(isset($_GET['publish']) AND !empty($_GET['publish'])) {
         <h2><?= $user['username'] ?></h2>
         <ul>
             <li>
-                <h4><a href="index.php?p=profil&amp;&amp;userid=<?= $user['id'] ?>&amp;tab=profil">Profil</a></h4>
+                <h4><a href="index.php?p=profile&amp;&amp;userid=<?= $user['id'] ?>&amp;tab=profile">Profil</a></h4>
             </li>
             <li>
-                <h4><a href="index.php?p=profil&amp;userid=<?= $user['id'] ?>&amp;tab=articles">Articles</a></h4>
+                <h4><a href="index.php?p=profile&amp;userid=<?= $user['id'] ?>&amp;tab=articles">Articles</a></h4>
             </li>
             <li>
-                <h4><a href="index.php?p=profil&amp;userid=<?= $user['id'] ?>&amp;tab=settings">Paramètres</a></h4>
+                <h4><a href="index.php?p=profile&amp;userid=<?= $user['id'] ?>&amp;tab=settings">Paramètres</a></h4>
             </li>
 
-        <?php if(isset($_GET['tab']) AND $_GET['tab'] == 'profil') { ?>
+        <?php if(isset($_GET['tab']) AND $_GET['tab'] == 'profile') { ?>
 
             <p>Informations sur l'utilisateur...</p>
 
@@ -85,7 +85,7 @@ if(isset($_GET['publish']) AND !empty($_GET['publish'])) {
             $request->execute(array('author_id' => $user['id'])); ?>
 
             <h4>
-                <a href="index.php?p=edition_article">Nouvel article !</a>
+                <a href="index.php?p=articleEdition">Nouvel article !</a>
             </h4>
 
             <ul>
@@ -110,7 +110,7 @@ if(isset($_GET['publish']) AND !empty($_GET['publish'])) {
                         <?php } else { ?>
 
                             <i>Non publié pour l'instant.<br>
-                            <a href="index.php?p=profil&amp;userid=<?= $_GET['userid'] ?>&amp;publish=<?= $article['id'] ?>">Publier</a></i><br>
+                            <a href="index.php?p=profile&amp;userid=<?= $_GET['userid'] ?>&amp;publish=<?= $article['id'] ?>">Publier</a></i><br>
 
                         <?php } ?>
 
@@ -121,8 +121,8 @@ if(isset($_GET['publish']) AND !empty($_GET['publish'])) {
                         <?php if(isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email']) AND $article['author_id'] == $_SESSION['id']) { ?>
 
                             <p>
-                                <a href="index.php?p=edition_article&amp;edit=<?= $article['id'] ?>">Modifier | </a>
-                                <a href="index.php?p=supprimer_article&amp;id=<?= $article['id'] ?>">Supprimer</a>
+                                <a href="index.php?p=articleEdition&amp;edit=<?= $article['id'] ?>">Modifier | </a>
+                                <a href="index.php?p=removeArticle&amp;id=<?= $article['id'] ?>">Supprimer</a>
                             </p>
 
                         <?php } ?>

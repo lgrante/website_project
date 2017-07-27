@@ -9,28 +9,28 @@ if(isset($_GET['p']) AND !empty($_GET['p'])) {
 			include('pages/article.php');
 			break;
 		
-		case 'edition_article':
-			include('pages/edition_article.php');
+		case 'articleEdition':
+			include('pages/articleEdition.php');
 			break;
 
-		case 'supprimer_article':
-			include('pages/supprimer_article.php');
+		case 'removeArticle':
+			include('pages/removeArticle.php');
 			break;
 
-		case 'inscription':
-			include('pages/inscription.php');
+		case 'registration':
+			include('pages/registration.php');
 			break;
 
-		case 'connection':
-			include('pages/connection.php');
+		case 'logingIn':
+			include('pages/logingIn.php');
 			break;
 
-		case 'deconnection':
-			include('pages/deconnection.php');
+		case 'logingOut':
+			include('pages/logingOut.php');
 			break;
 
-		case 'profil':
-			include('pages/profil.php');
+		case 'profile':
+			include('pages/profile.php');
 			break;
 
 		default:

@@ -67,7 +67,7 @@ if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 	    		</tr>
 	    		<tr>
 	    		<?php if(!isset($_GET['first_connection'])) { ?>
-	    			<td><a href="index.php?p=inscription">Je n'ai pas de compte</a></td>
+	    			<td><a href="index.php?p=registration">Je n'ai pas de compte</a></td>
 	    		<?php } ?>
 	    			<td><br />
 	    				<input type="submit" value="Valider !">
