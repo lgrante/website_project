@@ -129,20 +129,7 @@ if(isset($_GET['publish']) AND !empty($_GET['publish'])) {
                     </li>
                 <?php } ?>
             </ul> 
-        <?php } else if(isset($_GET['tab']) AND $_GET['tab'] == 'settings') { 
-
-            $usernamesTaken = $bdd->query('SELECT username, email FROM users');
-
-            $result = array();
-
-            while ($a = $usernamesTaken->fetch()) {
-                $result[] = $a;
-            }
-
-            $resultJson = json_encode($result);
-            file_put_contents('json/users_list.json', $resultJson);
-
-            ?>
+        <?php } else if(isset($_GET['tab']) AND $_GET['tab'] == 'settings') { ?>
 
             <div class="changeUsername">
                 <h3>Votre nom d'utilisateur</h3>

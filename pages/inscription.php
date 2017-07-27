@@ -6,17 +6,6 @@ if(!isset($_SESSION['id'], $_SESSION['username'], $_SESSION['email'])) {
 
 	include_once('inc/connection_bdd.php');
 
-	$usernamesTaken = $bdd->query('SELECT username, email FROM users');
-
-	$result = array();
-
-	while ($a = $usernamesTaken->fetch()) {
-		$result[] = $a;
-	}
-
-    $resultJson = json_encode($result);
-	file_put_contents('json/users_list.json', $resultJson);
-
 	if(isset($_POST['email'], $_POST['username'], $_POST['password'], $_POST['passwordConfirm'])) {
 		$email = htmlspecialchars($_POST['email']);
 		$username = htmlspecialchars($_POST['username']);
