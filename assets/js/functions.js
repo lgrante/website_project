@@ -63,7 +63,7 @@ function Form(form, checksNumber) {
 
             if(xhr.readyState === 4 && (xhr.status === 0 || xhr.status === 200)) {
 
-                that.checks[checkNumber] = xhr.responseText === '1'; // Si le test est positif wrongField est vrai.
+                that.checks[checkNumber] = xhr.responseText === '1'; // Si le test est positif checks est vrai.
                 callback();
 
             }

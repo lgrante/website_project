@@ -1,48 +1,49 @@
 <?php 
 
-//include_once('pages/header.php');
+include_once('global/head.php');
+include_once('global/header.php');
 
 if(isset($_GET['p']) AND !empty($_GET['p'])) {
 
 	switch ($_GET['p']) {
 		case 'article':
-			include('pages/article.php');
+			include('controller/article.php');
 			break;
 		
-		case 'articleEdition':
-			include('pages/articleEdition.php');
+		case 'article_edition':
+			include('controller/article_edition.php');
 			break;
 
-		case 'removeArticle':
-			include('pages/removeArticle.php');
+		case 'remove_article':
+			include('controller/remove_article.php');
 			break;
 
 		case 'registration':
-			include('pages/registration.php');
+			include('controller/registration.php');
 			break;
 
-		case 'logingIn':
-			include('pages/logingIn.php');
+		case 'loging_in':
+			include('controller/loging_in.php');
 			break;
 
-		case 'logingOut':
-			include('pages/logingOut.php');
+		case 'loging_out':
+			include('controller/loging_out.php');
 			break;
 
 		case 'profile':
-			include('pages/profile.php');
+			include('controller/profile.php');
 			break;
 
 		default:
-			include('pages/index.php');
+			include('controller/main.php');
 			break;
 			
 	}
 
 } else {
 
-	include('pages/index.php');
+	include('controller/main.php');
 
 }
 
-//include_once('pages/footer.php');
+include_once('global/footer.php');

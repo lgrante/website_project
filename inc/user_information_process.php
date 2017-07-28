@@ -4,7 +4,8 @@ session_start();
 
 header('Content-Type: text/plain');
 
-include_once('connection_bdd.php');
+include_once('../global/config.php');
+include_once('db_connection.php');
 
 $response = '';
 

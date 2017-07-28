@@ -50,7 +50,7 @@ form.fields.username.addEventListener('input', function (e) {
 form.fields.password.addEventListener('input', function (e) {
 
     form.isPasswordCorrect(e.target.value, 3);
-    form.isSamePassword(e.target.value, form.fields['passwordConfirm'].value, 4);
+    form.isSamePassword(e.target.value, form.fields['password_confirm'].value, 4);
     var message = '';
     var color;
     var borderColor;
@@ -91,13 +91,13 @@ form.fields.password.addEventListener('input', function (e) {
 
 });
 
-form.fields.passwordConfirm.addEventListener('input', function(e) {
+form.fields.password_confirm.addEventListener('input', function(e) {
 
     form.isSamePassword(e.target.value, form.fields['password'].value, 4);
     var message = (form.checks[4]) ? '' : 'Les deux mots de passe ne correspondent pas';
     var borderColor = (form.checks[4]) ? 'green' : 'red';
     form.displayMessage(document.getElementById('helpPasswordConfirm'), message, 'red');
-    form.fields.passwordConfirm.style.border = '2px solid ' + borderColor; 
+    form.fields.password_confirm.style.border = '2px solid ' + borderColor; 
     form.formAction();
 
 }); 
